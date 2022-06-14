@@ -154,8 +154,8 @@ jobs:
       - name: 'Prepare GAIA-X self-description signature request'
         uses: cuchi/jinja2-action@v1.2.0
         with:
-          template: WrappedParticipantSelfDescription.json.j2
-          output_file: WrappedParticipantSelfDescription.json
+          template: deployment/terraform/dataspace/WrappedParticipantSelfDescription.json.j2
+          output_file: deployment/terraform/dataspace/WrappedParticipantSelfDescription.json
           strict: true
           variables: |
             registrationNumber=A999999
@@ -282,8 +282,8 @@ jobs:
       - name: 'Prepare GAIA-X self-description signature request'
         uses: cuchi/jinja2-action@v1.2.0
         with:
-          template: WrappedParticipantSelfDescription.json.j2
-          output_file: WrappedParticipantSelfDescription.json
+          template: deployment/terraform/participant/WrappedParticipantSelfDescription.json.j2
+          output_file: deployment/terraform/participant/WrappedParticipantSelfDescription.json
           strict: true
           variables: |
             registrationNumber=${{ matrix.registrationNumber }}
