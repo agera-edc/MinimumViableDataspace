@@ -154,7 +154,6 @@ jobs:
           prefix = "${{ env.RESOURCES_PREFIX }}"
           resource_group = "rg-${{ env.RESOURCES_PREFIX }}"
           registry_runtime_image = "mvd/registration-service:${{ env.RESOURCES_PREFIX }}"
-          registry_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
           application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
           EOF
 
@@ -262,7 +261,6 @@ jobs:
           dashboard_image = "mvd/data-dashboard:${{ env.RESOURCES_PREFIX }}"
           application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
           application_sp_client_id = "${{ secrets.APP_CLIENT_ID }}"
-          registry_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
           registration_service_api_url = "${{ needs.Deploy-Dataspace.outputs.registration_service_url }}/api"
           EOF
 

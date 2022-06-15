@@ -71,10 +71,6 @@ variable "public_key_jwk_file" {
   default     = null
 }
 
-variable "registry_resource_group" {
-  description = "resource group of the registry JSON documents file share storage account"
-}
-
 variable "registration_service_api_url" {
   description = "registration api url"
 }

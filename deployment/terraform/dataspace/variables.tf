@@ -31,10 +31,6 @@ variable "container_memory" {
   default = "8"
 }
 
-variable "registry_resource_group" {
-  description = "resource group of the registration service"
-}
-
 variable "application_sp_object_id" {
   description = "object id of application's service principal object"
 }
