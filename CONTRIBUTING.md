@@ -1,7 +1,7 @@
 Contributing to the Project
 ===================================
 
-Thank you for your interest in contributing to the IdentityHub!
+Thank you for your interest in contributing to the MinimumViableDataspace!
 
 ## Table of Contents
 
