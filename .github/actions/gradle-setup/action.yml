@@ -14,9 +14,9 @@ runs:
     - name: Checkout Registration Service
       uses: actions/checkout@v2
       with:
-        repository: agera-edc/RegistrationServiceFork
+        repository: agera-edc/RegistrationService
         path: RegistrationService
-        ref: 83b6cd1013d2330253477d2713a660f1babdab16
+        ref: 526717e1a2db085b90f411e1357447b7e5c9543b
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
@@ -58,6 +58,7 @@ runs:
       shell: bash
       working-directory: RegistrationService
 
+    # Keep RegistrationService sources as needed for build
     - name: Move Registration Service packages out of build directory
       run: mv RegistrationService ${{ runner.temp }}
       shell: bash
