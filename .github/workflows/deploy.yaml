@@ -20,6 +20,8 @@ on:
 permissions:
   id-token: write
   contents: read
+  checks: write
+  pull-requests: write
 
 env:
   RESOURCES_PREFIX: ${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}
@@ -345,11 +347,6 @@ jobs:
       - Deploy-Participants
       - Deploy-Dataspace
     runs-on: ubuntu-latest
-
-    permissions:
-      checks: write
-      pull-requests: write
-
     steps:
       # Checkout MVD code
       - uses: actions/checkout@v2
@@ -397,11 +394,6 @@ jobs:
     needs:
       - Deploy-Participants
       - Deploy-Dataspace
-
-    permissions:
-      checks: write
-      pull-requests: write
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
