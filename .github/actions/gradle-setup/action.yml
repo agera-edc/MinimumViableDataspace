@@ -14,9 +14,9 @@ runs:
     - name: Checkout Registration Service
       uses: actions/checkout@v2
       with:
-        repository: eclipse-dataspaceconnector/RegistrationService
+        repository: agera-edc/RegistrationService
         path: RegistrationService
-        ref: e3cd829bd0d332bb91dce0d56ff5759dccc46815
+        ref: 526717e1a2db085b90f411e1357447b7e5c9543b
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
