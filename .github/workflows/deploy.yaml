@@ -104,11 +104,11 @@ jobs:
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}
     steps:
-      - name: Checkout EDCDataDashboard
+      - name: Checkout DataDashboard
         uses: actions/checkout@v2
         with:
-          repository: agera-edc/EDCDataDashboard
-          ref: 6657d71bca844e0c2fc0a01081b8fd97628d522f
+          repository: eclipse-dataspaceconnector/DataDashboard
+          ref: 7ceee5f526bc82b443027e02b894d542248f1cd4
 
       - name: 'Az CLI login'
         uses: azure/login@v1
