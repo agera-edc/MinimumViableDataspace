@@ -16,7 +16,7 @@ runs:
       with:
         repository: eclipse-dataspaceconnector/RegistrationService
         path: RegistrationService
-        ref: e3cd829bd0d332bb91dce0d56ff5759dccc46815
+        ref: ef045e3b6556bf1b1148536a1be30d564fd56bf6
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
