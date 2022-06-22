@@ -335,17 +335,12 @@ jobs:
           deployment/seed-data.sh
         working-directory: .
 
-      - name: 'Configure Registration Service CLI'
+      - name: 'Register participant'
         run: |
-          alias registration-service-cli='java -jar client-cli/build/libs/registration-service-cli.jar -s=$REGISTRATION_SERVICE_API_URL'
+          java -jar client-cli/build/libs/registration-service-cli.jar -s=$REGISTRATION_SERVICE_API_URL participants add --request='{ "name": "${{matrix.participant}}", "supportedProtocols": [ "ids-multipart" ], "url": "http://${{ env.EDC_HOST }}:8282" }'
         working-directory: ${{ runner.temp }}/RegistrationService
         env:
           REGISTRATION_SERVICE_API_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}/api
-
-      - name: 'Register participant'
-        run: |
-          registration-service-cli participants add --request='{ "name": "${{matrix.participant}}", "supportedProtocols": [ "ids-multipart" ], "url": "http://${{ env.EDC_HOST }}:8282" }'
-        working-directory: ${{ runner.temp }}/RegistrationService
 
   Verify:
     needs:
