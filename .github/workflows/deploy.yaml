@@ -335,10 +335,9 @@ jobs:
           deployment/seed-data.sh
         working-directory: .
 
-      - name: 'Build CLI JAR'
+      - name: 'Build RegistrationService CLI JAR'
         run: |
           ./gradlew build
-          ls client-cli
         working-directory: ${{ runner.temp }}/RegistrationService
 
       - name: 'Register participant'
