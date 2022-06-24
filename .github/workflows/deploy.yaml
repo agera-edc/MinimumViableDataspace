@@ -95,10 +95,6 @@ jobs:
         run: ./gradlew launcher:shadowJar
         working-directory: ${{ runner.temp }}/RegistrationService
 
-      - name: 'Build CLI JAR'
-        run: ./gradlew build
-        working-directory: ${{ runner.temp }}/RegistrationService
-
       # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
         run: az acr build --registry $ACR_NAME --image mvd/registration-service:${{ env.RESOURCES_PREFIX }} .
@@ -339,10 +335,14 @@ jobs:
           deployment/seed-data.sh
         working-directory: .
 
+      - name: 'Build CLI JAR'
+        run: |
+          ./gradlew build
+          ls client-cli
+        working-directory: ${{ runner.temp }}/RegistrationService
+
       - name: 'Register participant'
         run: |
-          echo "$PWD"
-          ls
           java -jar client-cli/build/libs/registration-service-cli.jar -s=$REGISTRATION_SERVICE_API_URL participants add --request='{ "name": "${{matrix.participant}}", "supportedProtocols": [ "ids-multipart" ], "url": "http://${{ env.EDC_HOST }}:8282" }'
         working-directory: ${{ runner.temp }}/RegistrationService
         env:
