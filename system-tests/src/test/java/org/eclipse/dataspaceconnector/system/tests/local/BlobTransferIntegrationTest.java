@@ -16,7 +16,7 @@
 
 package org.eclipse.dataspaceconnector.system.tests.local;
 
-import com.azure.identity.AzureCliCredentialBuilder;
+import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
@@ -64,8 +64,7 @@ public class BlobTransferIntegrationTest {
 
     @NotNull
     private BlobServiceClient getBlobServiceClient(String keyVaultName) {
-        // Not using DefaultAzureCredentialBuilder because of agent issue https://github.com/orgs/github-community/discussions/20830
-        var credential = new AzureCliCredentialBuilder().build();
+        var credential = new DefaultAzureCredentialBuilder().build();
         var vault = new SecretClientBuilder()
                 .vaultUrl(format(KEY_VAULT_ENDPOINT_TEMPLATE, keyVaultName))
                 .credential(credential)
