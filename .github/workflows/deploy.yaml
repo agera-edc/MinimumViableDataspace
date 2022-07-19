@@ -183,6 +183,10 @@ jobs:
           ' >> backend.conf
           terraform init -backend-config=backend.conf
           terraform apply -auto-approve
+          connector_name=$(terraform output -raw connector_name)
+          echo "::set-output name=connector_name::${connector_name}"
+          key_vault=$(terraform output -raw key_vault)
+          echo "::set-output name=key_vault::${key_vault}"
           app_insights_connection_string=$(terraform output -raw app_insights_connection_string)
           echo "::set-output name=app_insights_connection_string::${app_insights_connection_string}"
           registration_service_url=$(terraform output -raw registration_service_url)
@@ -200,9 +204,21 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           # Terraform variables not included in terraform.tfvars.
-          TF_VAR_key_file_authority: "authoritykey.pem"
           TF_VAR_public_key_jwk_file_authority: "authoritykey.public.jwk"
           TF_VAR_public_key_jwk_file_gaiax: "gaiaxkey.public.jwk"
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Upload private key as vault secret'
+        run: az keyvault secret set --name $name --vault-name $vault --file authoritykey.pem
+        env:
+          name: ${{ steps.runterraform.outputs.connector_name }}
+          vault: ${{ steps.runterraform.outputs.key_vault }}
 
       - name: 'Verify GAIA-X Authority DID endpoint is available'
         run: curl https://${{ steps.runterraform.outputs.gaiax_did_host }}/.well-known/did.json | jq '.id'
