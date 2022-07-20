@@ -4,8 +4,49 @@ The test copy a file from provider to consumer blob storage account.
 
 ## Publish/Build Tasks
 
-MVD dependencies are Eclipse DataSpaceConnector(EDC) and Registration Service. Both of these dependencies are not published to any central artifactory yet so in local development we have to use locally published dependencies.
+> ! Important Note !
+> 
+> MVD dependencies are Eclipse DataSpaceConnector(EDC) and Registration Service. Both of these dependencies 
+> are __not__ published to any central artifactory yet so in local development we have to use locally 
+> published dependencies.
+>
+>In order to use the correct version of each repo required by the `MVD`, you need to look in [action.yml](./.github/actions/../../../.github/actions/gradle-setup/action.yml) for the hashes of the versions of the `EDC` and the `Registration Service` that are being used by the `MVD`
+>
+> For Example, the `Registration Service` and `EDC` repository hash can be found in the _Checkout_ steps  (in the `ref` property) of [action.yml](./.github/actions/../../../.github/actions/gradle-setup/action.yml):
 
+```yml
+    - name: Checkout EDC
+      uses: actions/checkout@v2
+      with:
+        repository: eclipse-dataspaceconnector/DataSpaceConnector
+        path: DataSpaceConnector
+        ref: 3ff940b720f44826df28e893fb31344eb6faacef
+
+    - name: Checkout Registration Service
+      uses: actions/checkout@v2
+      with:
+        repository: eclipse-dataspaceconnector/RegistrationService
+        path: RegistrationService
+        ref: 374c14bcca23ddb1dcd7476a27264510e54de7fa
+```
+
+> After you have cloned the `EDC` and `Registration Service` repos locally you should run the command to >
+> `reset` to the specific hash.  
+>
+> For Example:
+> `EDC`
+
+```bash
+# EDC (in the EDC root folder)
+git reset --hard 3ff940b720f44826df28e893fb31344eb6faacef
+
+# Registration Service (in the Registration Service root folder)
+git reset --hard 374c14bcca23ddb1dcd7476a27264510e54de7fa
+```
+
+> Now you can follow the rest of the process below.  
+> Once the publications are available in _Maven Central_ this process will not be necessary
+> 
 <br />
 
 ### EDC
