@@ -136,14 +136,14 @@ Once completed, these commands will start:
 
 _Note, the `Newman` docker container will automatically stop after seeding initial data from postman scripts._
 
-`EDC Connectors` need to be registered using `Registration Service` CLI client jar. After publishing `Registration Service` locally the client jar should be available under the `RegistrationService-Root/client-cli/build/libs` folder.
+`EDC Connectors` need to be registered using `Registration Service` CLI client jar. After publishing `Registration Service` locally the client jar should be available under the `Registration Service` root project folder in _client-cli/build/libs_.
 
 ```bash
 export REGISTRATION_SERVICE_CLI_JAR_PATH=<registration service client jar path>
 ./system-tests/resources/register-participants.sh
 ```
 
-_Note for Windows PowerShell, first set the environment variable using the command below then the shell script located in `./system-tests/resources/register-participants.sh` can be copied and executed from `Powershell` or with `git-bash`._
+_Note for Windows PowerShell, first set the environment variable using the command below then the shell script located in `./system-tests/resources/register-participants.sh` can be ~~copied and executed from `Powershell` or~~ with `git-bash` or a `bash WSL` prompt._
 
 ```powershell
 $Env:REGISTRATION_SERVICE_CLI_JAR_PATH = "<registration service client jar path>"
