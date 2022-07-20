@@ -30,7 +30,7 @@ The test copy a file from provider to consumer blob storage account.
         ref: 374c14bcca23ddb1dcd7476a27264510e54de7fa
 ```
 
-> After you have cloned the `EDC` and `Registration Service` repos locally you should run the command to >
+> After you have cloned the `EDC` and `Registration Service` repos locally you should run the command to
 > `reset` to the specific hash.  
 >
 > For Example:
