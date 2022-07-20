@@ -436,7 +436,6 @@ jobs:
         env:
           APP_CLIENT_SECRET: ${{ secrets.APP_CLIENT_SECRET }}
 
-
       - name: 'Unit and system tests'
         run: ./gradlew test
         timeout-minutes: 10
