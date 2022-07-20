@@ -398,8 +398,8 @@ jobs:
 
       - name: 'Register participant'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:1.0.0-SNAPSHOT:jar:all -DoutputDirectory=.
-          java -jar registration-service-cli-1.0.0-SNAPSHOT-all.jar \
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:0.0.1-SNAPSHOT:jar:all -DoutputDirectory=.
+          java -jar registration-service-cli-0.0.1-SNAPSHOT-all.jar \
             -s $REGISTRATION_SERVICE_API_URL \
             -d did:web:$DID_HOST \
             -k key.pem \
