@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +14,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TestUtils.requiredPropOrEnv;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class IdentityHubIntegrationTest {
 
@@ -47,9 +47,9 @@ public class IdentityHubIntegrationTest {
 
     private static Stream<Arguments> provideHubUrls() {
         return Stream.of(
-                Arguments.of(PROVIDER_IDENTITY_HUB_URL),
-                Arguments.of(CONSUMER_EU_IDENTITY_HUB_URL),
-                Arguments.of(CONSUMER_US_IDENTITY_HUB_URL)
+                arguments(PROVIDER_IDENTITY_HUB_URL),
+                arguments(CONSUMER_EU_IDENTITY_HUB_URL),
+                arguments(CONSUMER_US_IDENTITY_HUB_URL)
         );
     }
 }
