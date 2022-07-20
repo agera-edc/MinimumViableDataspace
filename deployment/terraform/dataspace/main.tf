@@ -37,13 +37,15 @@ locals {
 
   connector_name = "connector-registration"
 
-  registration_service_dns_label = "${var.prefix}-registration-mvd"
-  edc_default_port               = 8181
+  registration_service_dns_label  = "${var.prefix}-registration-mvd"
+  edc_default_port                = 8181
+  registration_service_port       = 8182
+  registration_service_url_prefix = "/authority"
 
   dataspace_did_uri = "did:web:${azurerm_storage_account.dataspace_did.primary_web_host}"
   gaiax_did_uri     = "did:web:${azurerm_storage_account.gaiax_did.primary_web_host}"
 
-  registration_service_url = "http://${azurerm_container_group.registration-service.fqdn}:${local.edc_default_port}"
+  registration_service_url = "http://${azurerm_container_group.registration-service.fqdn}:${local.registration_service_port}"
 }
 
 resource "azurerm_resource_group" "dataspace" {
@@ -79,7 +81,7 @@ resource "azurerm_container_group" "registration-service" {
     memory = var.container_memory
 
     ports {
-      port     = local.edc_default_port
+      port     = local.registration_service_port
       protocol = "TCP"
     }
 
