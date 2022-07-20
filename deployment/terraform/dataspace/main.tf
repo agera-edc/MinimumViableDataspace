@@ -164,7 +164,7 @@ resource "azurerm_storage_blob" "dataspace_did" {
       {
         "id" : "#enrollment-url",
         "type" : "EnrollmentUrl",
-        "serviceEndpoint" : "${local.registration_service_url}/api"
+        "serviceEndpoint" : "${local.registration_service_url}/authority"
       }
     ],
     "verificationMethod" = [
