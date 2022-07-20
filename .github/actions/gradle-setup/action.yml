@@ -21,11 +21,9 @@ runs:
     - name: Checkout Identity Hub
       uses: actions/checkout@v2
       with:
-        # TODO: switch to upstream repository once changes are merged
-        #repository: eclipse-dataspaceconnector/IdentityHub
-        repository: agera-edc/IdentityHub
+        repository: eclipse-dataspaceconnector/IdentityHub
         path: IdentityHub
-        ref: 77aa4007987aed1a7080aa58211147a66f62fc20
+        ref: 2561fba2129c9f75417d467c89982fd83a7808cb
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
@@ -54,7 +52,7 @@ runs:
       shell: bash
       working-directory: DataSpaceConnector
 
-    - name: Delete EDC packages
+    - name: Delete local EDC repository
       run: rm -r DataSpaceConnector
       shell: bash
 
@@ -80,3 +78,7 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
       shell: bash
       working-directory: IdentityHub
+
+    - name: Delete local Identity Hub repository
+      run: rm -r IdentityHub
+      shell: bash
