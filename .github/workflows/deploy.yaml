@@ -235,13 +235,13 @@ jobs:
           sudo apt-get install -y libssl-dev autoconf libtool make
           cd /usr/local/src
           rm -rf curl*
-          wget -v https://curl.haxx.se/download/curl-7.84.0.zip
-          unzip curl-7.84.0.zip
+          sudo wget -v https://curl.haxx.se/download/curl-7.84.0.zip
+          sudo unzip curl-7.84.0.zip
           cd curl-7.84.0
-          ./buildconf
-          ./configure --with-ssl
-          make
-          make install
+          sudo ./buildconf
+          sudo ./configure --with-ssl
+          sudo make
+          sudo make install
           mv /usr/bin/curl /usr/bin/curl.bak
           cp /usr/local/bin/curl /usr/bin/curl
           curl --version
@@ -400,13 +400,13 @@ jobs:
           sudo apt-get install -y libssl-dev autoconf libtool make
           cd /usr/local/src
           rm -rf curl*
-          wget -v https://curl.haxx.se/download/curl-7.84.0.zip
-          unzip curl-7.84.0.zip
+          sudo wget -v https://curl.haxx.se/download/curl-7.84.0.zip
+          sudo unzip curl-7.84.0.zip
           cd curl-7.84.0
-          ./buildconf
-          ./configure --with-ssl
-          make
-          make install
+          sudo ./buildconf
+          sudo ./configure --with-ssl
+          sudo make
+          sudo make install
           mv /usr/bin/curl /usr/bin/curl.bak
           cp /usr/local/bin/curl /usr/bin/curl
           curl --version
