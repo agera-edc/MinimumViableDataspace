@@ -222,6 +222,7 @@ jobs:
 
       - name: 'Upgrade Curl'
         run: |
+          chmod +x deployment/curl-upgrade.sh
           deployment/curl-upgrade.sh
         working-directory: .
         env:
@@ -379,6 +380,7 @@ jobs:
 
       - name: 'Upgrade Curl'
         run: |
+          chmod +x deployment/curl-upgrade.sh
           deployment/curl-upgrade.sh
         working-directory: .
         env:
