@@ -229,7 +229,23 @@ jobs:
       - name: 'Verify deployed Registration Service is healthy'
         run: |
           curl --version
-          curl --retry 100 --verbose --fail ${{ steps.runterraform.outputs.registration_service_url }}/api/check/health
+          apt remove curl
+          apt purge curl
+          apt-get update
+          apt-get install -y libssl-dev autoconf libtool make
+          cd /usr/local/src
+          rm -rf curl*
+          wget -v https://curl.haxx.se/download/curl-7.84.0.zip
+          unzip curl-7.84.0.zip
+          cd curl-7.84.0
+          ./buildconf
+          ./configure --with-ssl
+          make
+          make install
+          mv /usr/bin/curl /usr/bin/curl.bak
+          cp /usr/local/bin/curl /usr/bin/curl
+          curl --version
+          curl --retry 100 --retry-all-errors --verbose --fail ${{ steps.runterraform.outputs.registration_service_url }}/api/check/health
 
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
@@ -378,7 +394,23 @@ jobs:
       - name: 'Verify deployed EDC is healthy'
         run: |
           curl --version
-          curl --retry 100 --verbose --fail http://${EDC_HOST}:8181/api/check/health
+          apt remove curl
+          apt purge curl
+          apt-get update
+          apt-get install -y libssl-dev autoconf libtool make
+          cd /usr/local/src
+          rm -rf curl*
+          wget -v https://curl.haxx.se/download/curl-7.84.0.zip
+          unzip curl-7.84.0.zip
+          cd curl-7.84.0
+          ./buildconf
+          ./configure --with-ssl
+          make
+          make install
+          mv /usr/bin/curl /usr/bin/curl.bak
+          cp /usr/local/bin/curl /usr/bin/curl
+          curl --version
+          curl --retry 100 --retry-all-errors --verbose --fail http://${EDC_HOST}:8181/api/check/health
 
       - name: 'Seed data'
         run: |
