@@ -139,6 +139,8 @@ _Note, the `Newman` docker container will automatically stop after seeding initi
 
 ```bash
 export REGISTRATION_SERVICE_CLI_JAR_PATH=<registration service client jar path>
+# For Example:
+#   export REGISTRATION_SERVICE_CLI_JAR_PATH=c:/RegistrationService/client-cli/build/libs/registration-service-cli.jar
 ./system-tests/resources/register-participants.sh
 ```
 
@@ -146,6 +148,8 @@ _Note for Windows PowerShell, first set the environment variable using the comma
 
 ```powershell
 $Env:REGISTRATION_SERVICE_CLI_JAR_PATH = "<registration service client jar path>"
+# For example: 
+#   $env:REGISTRATION_SERVICE_CLI_JAR_PATH="c:\RegistrationService\client-cli\build\libs\registration-service-cli.jar"
 # Now execute the script located in `./system-tests/resources/register-participants.sh`
 ```
 
