@@ -63,7 +63,6 @@ resource "azurerm_container_group" "registration-service" {
   ip_address_type     = "Public"
   dns_name_label      = local.registration_service_dns_label
   os_type             = "Linux"
-  restart_policy      = "OnFailure"
 
   image_registry_credential {
     username = data.azurerm_container_registry.registrationservice.admin_username

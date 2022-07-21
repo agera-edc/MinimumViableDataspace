@@ -63,7 +63,6 @@ resource "azurerm_container_group" "edc" {
   ip_address_type     = "Public"
   dns_name_label      = local.edc_dns_label
   os_type             = "Linux"
-  restart_policy      = "OnFailure"
 
   image_registry_credential {
     username = data.azurerm_container_registry.registry.admin_username
@@ -141,7 +140,6 @@ resource "azurerm_container_group" "webapp" {
   ip_address_type     = "Public"
   dns_name_label      = "${var.prefix}-${var.participant_name}-mvd"
   os_type             = "Linux"
-  restart_policy      = "OnFailure"
 
   image_registry_credential {
     username = data.azurerm_container_registry.registry.admin_username
