@@ -1,16 +1,16 @@
 # System tests
 
-The test copy a file from provider to consumer blob storage account.
+The system tests copy a file from a provider to a consumer blob storage account.
 
 ## Publish/Build Tasks
 
 > ! Important Note !
 > 
 > MVD dependencies are Eclipse DataSpaceConnector(EDC) and Registration Service. Both of these dependencies 
-> are __not__ published to any central artifactory yet so in local development we have to use locally 
+> are __not__ published to any central artifactory yet, so in local development we have to use locally 
 > published dependencies.
 >
->In order to use the correct version of each repo required by the `MVD`, you need to look in [action.yml](./.github/actions/../../../.github/actions/gradle-setup/action.yml) for the hashes of the versions of the `EDC` and the `Registration Service` that are being used by the `MVD`
+>In order to use the correct version of each repo required by the `MVD`, you need to look in [action.yml](./.github/actions/../../../.github/actions/gradle-setup/action.yml) for the hashes of the versions of the `EDC` and the `Registration Service` that are being used by the `MVD`.
 >
 > For Example, the `Registration Service` and `EDC` repository hash can be found in the _Checkout_ steps  (in the `ref` property) of [action.yml](./.github/actions/../../../.github/actions/gradle-setup/action.yml):
 
@@ -34,7 +34,6 @@ The test copy a file from provider to consumer blob storage account.
 > `reset` to the specific hash.  
 >
 > For Example:
-> `EDC`
 
 ```bash
 # EDC (in the EDC root folder)
@@ -53,7 +52,7 @@ git reset --hard 374c14bcca23ddb1dcd7476a27264510e54de7fa
 
 <br />
 
-Checkout [Eclipse DataSpaceConnector repository](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector). Next, publish `EDC` libraries to local Maven artifactory by executing the following command  from `EDC` root folder
+Checkout [Eclipse DataSpaceConnector repository](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector). Next, publish `EDC` libraries to local Maven artifactory by executing the following command  from `EDC` root folder.
 
 
 ```bash
