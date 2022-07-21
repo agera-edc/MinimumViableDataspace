@@ -141,7 +141,7 @@ services:
       args:
         JVM_ARGS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008"
     environment:
-      JWT_AUDIENCE: http://registration-service:8184/authority
+      JWT_AUDIENCE: http://localhost:8184/authority
       WEB_HTTP_AUTHORITY_PORT: 8184
       WEB_HTTP_AUTHORITY_PATH: /authority
       EDC_IAM_DID_WEB_USE_HTTPS: "false"
