@@ -34,12 +34,12 @@ jobs:
 
       - name: 'Register participant'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:1.0.0-SNAPSHOT:jar:all -DoutputDirectory=.
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:0.0.1-SNAPSHOT:jar:all -DoutputDirectory=.
           chmod +x system-tests/resources/register-participants.sh
           system-tests/resources/register-participants.sh
         working-directory: .
         env:
-          REGISTRATION_SERVICE_CLI_JAR_PATH: ./registration-service-cli-1.0.0-SNAPSHOT-all.jar
+          REGISTRATION_SERVICE_CLI_JAR_PATH: ./registration-service-cli-0.0.1-SNAPSHOT-all.jar
 
       - name: 'Unit and system tests'
         run: ./gradlew test
