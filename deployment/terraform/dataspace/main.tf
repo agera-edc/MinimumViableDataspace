@@ -37,11 +37,11 @@ locals {
 
   connector_name = "connector-registration"
 
-  registration_service_dns_label  = "${var.prefix}-registration-mvd"
-  edc_default_port                = 8181
-  registration_service_port       = 8182
-  registration_service_url_prefix = "/authority"
-
+  registration_service_dns_label   = "${var.prefix}-registration-mvd"
+  edc_default_port                 = 8181
+  registration_service_port        = 8182
+  registration_service_path_prefix = "/authority"
+  registration_service_url         = "http://${local.registration_service_dns_label}.${var.location}.azurecontainer.io:${local.registration_service_port}"
 
   dataspace_did_url = "did:web:${azurerm_storage_account.dataspace_did.primary_web_host}"
   gaiax_did_url     = "did:web:${azurerm_storage_account.gaiax_did.primary_web_host}"
@@ -86,9 +86,9 @@ resource "azurerm_container_group" "registration-service" {
 
     environment_variables = {
       EDC_CONNECTOR_NAME      = local.connector_name
-      JWT_AUDIENCE            = "http://${local.registration_service_dns_label}.${var.location}.azurecontainer.io:${local.registration_service_port}${local.registration_service_url_prefix}"
+      JWT_AUDIENCE            = "${local.registration_service_url}${local.registration_service_path_prefix}"
       WEB_HTTP_AUTHORITY_PORT = local.registration_service_port
-      WEB_HTTP_AUTHORITY_PATH = local.registration_service_url_prefix
+      WEB_HTTP_AUTHORITY_PATH = local.registration_service_path_prefix
     }
 
     liveness_probe {
