@@ -118,7 +118,7 @@ export REGISTRATION_SERVICE_LAUNCHER_PATH=/home/user/RegistrationService/launche
 docker-compose -f system-tests/docker-compose.yml up --build
 ```
 
-_Note for Windows PowerShell, the following commands should be used (the path will depend on the location of the your `RegistrationService` project root):_
+_Note for Windows PowerShell, the following commands should be used from the `MVD` project root.  (The path will depend on the location of the your `RegistrationService` project root):_
 
 ```powershell
 $Env:REGISTRATION_SERVICE_LAUNCHER_PATH="c:/RegistrationService/launcher"
