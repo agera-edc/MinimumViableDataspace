@@ -1,21 +1,6 @@
----
-title: System Tests
-output: html_document
----
-
 # System tests
 
 The test copy a file from provider to consumer blob storage account.
-
-## Test Tab {.tabset .tabset-fade .tabset-pills}
-
-### Test 1
-
-Some Content for Test 1
-
-### Test 2
-
-Some Content for Test 2
 
 ## Publish/Build Tasks
 
@@ -126,7 +111,7 @@ From the `Registration Service` root folder, execute the following command:
 ./gradlew :launcher:shadowJar
 ```
 
-From the `Registration Service` root folder execute the following commands to set the `Registration Launcher` path environment variable and start `MVD` using the `docker-compose.yml` file.
+From the `MVD` root folder execute the following commands to set the `Registration Launcher` path environment variable and start `MVD` using the `docker-compose.yml` file.
 
 ```bash
 export REGISTRATION_SERVICE_LAUNCHER_PATH=/home/user/RegistrationService/launcher
