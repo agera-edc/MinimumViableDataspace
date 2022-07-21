@@ -227,7 +227,7 @@ jobs:
         run: curl https://${{ steps.runterraform.outputs.dataspace_did_host }}/.well-known/did.json | jq '.id'
 
       - name: 'Verify deployed Registration Service is healthy'
-        run: curl --retry 6 --fail ${{ steps.runterraform.outputs.registration_service_url }}/api/check/health
+        run: curl --retry 100 --fail ${{ steps.runterraform.outputs.registration_service_url }}/api/check/health
 
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
@@ -374,7 +374,7 @@ jobs:
         run: curl https://$DID_HOST/.well-known/did.json | jq '.id'
 
       - name: 'Verify deployed EDC is healthy'
-        run: curl --retry 6 --fail http://${EDC_HOST}:8181/api/check/health
+        run: curl --retry 100 --fail http://${EDC_HOST}:8181/api/check/health
 
       - name: 'Seed data'
         run: |
