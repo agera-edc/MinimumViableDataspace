@@ -138,22 +138,29 @@ _Note, the `Newman` docker container will automatically stop after seeding initi
 `EDC Connectors` need to be registered using `Registration Service` CLI client jar. After publishing `Registration Service` locally the client jar should be available under the `Registration Service` root project folder in _client-cli/build/libs_.
 
 ```bash
-export REGISTRATION_SERVICE_CLI_JAR_PATH=<registration service client jar path>
-# For Example:
-#   export REGISTRATION_SERVICE_CLI_JAR_PATH=c:/RegistrationService/client-cli/build/libs/registration-service-cli.jar
+# Replace path according to your local set up
+export REGISTRATION_SERVICE_CLI_JAR_PATH=c:/RegistrationService/client-cli/build/libs/registration-service-cli.jar
+
+# Register Participants
 ./system-tests/resources/register-participants.sh
 ```
 
-_Note for Windows PowerShell, first set the environment variable using the command below then the shell script located in `./system-tests/resources/register-participants.sh` can be ~~copied and executed from `Powershell` or~~ with `git-bash` or a `bash WSL` prompt._
+_Note for Windows PowerShell, the following commands should be run the the `MVD` root project folder._
 
 ```powershell
-$Env:REGISTRATION_SERVICE_CLI_JAR_PATH = "<registration service client jar path>"
-# For example: 
-#   $env:REGISTRATION_SERVICE_CLI_JAR_PATH="c:\RegistrationService\client-cli\build\libs\registration-service-cli.jar"
-# Now execute the script located in `./system-tests/resources/register-participants.sh`
-```
+# Replace path according to your local set up
 
-_Note for Windows, the shell script located in `./system-tests/resources/register-participants.sh` can be run from within a `bash` shell or with `git-bash`._
+$Env:REGISTRATION_SERVICE_CLI_JAR_PATH = "c:\RegistrationService\client-cli\build\libs\registration-service-cli.jar"
+
+# Register Provider
+java -jar $Env:REGISTRATION_SERVICE_CLI_JAR_PATH -s="http://localhost:8184/api" participants add --request="{ \`"name\`": \`"provider\`", \`"supportedProtocols\`": [ \`"ids-multipart\`" ], \`"url\`": \`"http://provider:8282\`" }"
+
+# Register Consumer-EU
+java -jar $Env:REGISTRATION_SERVICE_CLI_JAR_PATH -s="http://localhost:8184/api" participants add --request="{ \`"name\`": \`"consumer-eu\`", \`"supportedProtocols\`": [ \`"ids-multipart\`" ], \`"url\`": \`"http://consumer-eu:8282\`" }"
+
+# Register Consumer-US
+java -jar $Env:REGISTRATION_SERVICE_CLI_JAR_PATH -s="http://localhost:8184/api" participants add --request="{ \`"name\`": \`"consumer-us\`", \`"supportedProtocols\`": [ \`"ids-multipart\`" ], \`"url\`": \`"http://consumer-us:8282\`" }"
+```
 
 Set the environment variable `TEST_ENVIRONMENT` to `local` to enable local blob transfer test and then run `MVD` system test using the following command:
 
@@ -177,9 +184,10 @@ The following test resources are provided in order to run `MVD` locally. `system
 
 <br>
 
---- 
+---
 
 <br>
+
 Each `EDC Connector` has its own set of Private and Public keys with java keystore e.g. `system-tests/resources/provider`. These were generated using the following commands:
 
 ```bash
