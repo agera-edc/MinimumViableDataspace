@@ -26,19 +26,18 @@ jobs:
         run: ./gradlew :launcher:shadowJar
         working-directory: ${{ runner.temp }}/RegistrationService
 
+      - name: 'Copy Registration Service CLI'
+        run: |
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:0.0.1-SNAPSHOT:jar:all -DoutputDirectory=system-tests/resources/cli-tools
+          cd system-tests/resources/cli-tools
+          mv registration-service-cli-0.0.1-SNAPSHOT-all.jar registration-service-cli.jar
+        working-directory: .
+
       - name: 'Run MVD docker-compose'
         run: docker-compose -f system-tests/docker-compose.yml up --build --detach
         timeout-minutes: 10
         env:
           REGISTRATION_SERVICE_LAUNCHER_PATH: ${{ runner.temp }}/RegistrationService/launcher
-
-      - name: 'Register participant'
-        run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:0.0.1-SNAPSHOT:jar:all -DoutputDirectory=.
-          system-tests/resources/register-participants.sh
-        working-directory: .
-        env:
-          REGISTRATION_SERVICE_CLI_JAR_PATH: ./registration-service-cli-0.0.1-SNAPSHOT-all.jar
 
       - name: 'Unit and system tests'
         run: ./gradlew test
