@@ -7,7 +7,7 @@ The system tests copy a file from a provider to a consumer blob storage account.
 > ! Important Note !
 > 
 > MVD dependencies are Eclipse DataSpaceConnector(EDC) and Registration Service. Both of these dependencies 
-> are __not__ published to any central artifactory yet, so in local development we have to use locally 
+> are __not__ published to any central artifact repository yet, so in local development we have to use locally 
 > published dependencies.
 >
 >In order to use the correct version of each repo required by the `MVD`, you need to look in [action.yml](./.github/actions/../../../.github/actions/gradle-setup/action.yml) for the hashes of the versions of the `EDC` and the `Registration Service` that are being used by the `MVD`.
@@ -123,7 +123,7 @@ $Env:REGISTRATION_SERVICE_LAUNCHER_PATH="c:/RegistrationService/launcher"
 docker-compose -f system-tests/docker-compose.yml up --build
 ```
 
-Once completed, these commands will start:
+Once completed, following services will start within their docker containers:
 - 3 `EDC Connectors`
   - _consumer-us_
   - _consumer-eu_
