@@ -1,12 +1,12 @@
 # System tests
 
-The system tests copy a file from a provider to a consumer blob storage account.
+The system tests copies a file from a provider to a consumer blob storage account.
 
 ## Publish/Build Tasks
 
 > ! Important Note !
 > 
-> MVD dependencies are Eclipse DataSpaceConnector(EDC), Identity Hub and Registration Service. These dependencies 
+> MVD depends on Eclipse DataSpaceConnector(EDC), Identity Hub and Registration Service. These dependencies 
 > are __not__ published to any central artifact repository yet, so in local development we have to use locally 
 > published dependencies.
 >
