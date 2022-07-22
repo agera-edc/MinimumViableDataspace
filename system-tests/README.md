@@ -125,7 +125,7 @@ Now that the publishing to the local repositories has been completed, `MVD` can 
 
 _Note: Ensure that you are able to build `MVD` locally as described in the previous [section](#mvd)._
 
-First, we need to build `EDC Connector launcher` and `Registration Service launcher`.
+First, we need to build `EDC Connector`, `Identity Hub` and the `Registration Service`.
 
 From the `MVD` root folder, execute the following command:
 
