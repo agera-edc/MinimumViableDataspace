@@ -124,7 +124,7 @@ $Env:REGISTRATION_SERVICE_LAUNCHER_PATH="c:/RegistrationService/launcher"
 docker-compose -f system-tests/docker-compose.yml up --build
 ```
 
-Once completed, these commands will start:
+Once completed, following services will start within their docker containers:
 - 3 `EDC Connectors`
   - _consumer-us_
   - _consumer-eu_
