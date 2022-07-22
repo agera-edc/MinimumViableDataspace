@@ -12,7 +12,7 @@ The system tests copies a file from a provider to a consumer blob storage accoun
 >
 >In order to use the correct version of each repo required by the `MVD`, you need to look in [action.yml](./.github/actions/../../../.github/actions/gradle-setup/action.yml) for the hashes of the versions of the `EDC`, `Identity Hub` and the `Registration Service` that are being used by the `MVD`.
 >
-> For Example, the `Registration Service` and `EDC` repository hash can be found in the _Checkout_ steps  (in the `ref` property) of [action.yml](./.github/actions/../../../.github/actions/gradle-setup/action.yml):
+> For Example, the `Registration Service`, `Identity Hub` and `EDC` repository hash can be found in the _Checkout_ steps  (in the `ref` property) of [action.yml](./.github/actions/../../../.github/actions/gradle-setup/action.yml):
 
 ```yml
     - name: Checkout EDC
