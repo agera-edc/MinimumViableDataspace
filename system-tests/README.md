@@ -52,8 +52,7 @@ git reset --hard 374c14bcca23ddb1dcd7476a27264510e54de7fa
 
 <br />
 
-Checkout [Eclipse DataSpaceConnector repository](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector). Next, publish `EDC` libraries to local Maven artifactory by executing the following command  from `EDC` root folder.
-
+Execute the following command  from `EDC` root folder.
 
 ```bash
 ./gradlew publishToMavenLocal -Pskip.signing
@@ -71,7 +70,7 @@ _Note for Windows PowerShell, the following command should be used:_
 
 <br />
 
-Next checkout the [Registration Service repository](https://github.com/eclipse-dataspaceconnector/RegistrationService).  As before, publish `Registration Service` libraries to local Maven artifactory by executing the following command from `Registration Service` root folder:
+Execute the following command from `Registration Service` root folder:
 
 ```bash
 ./gradlew publishToMavenLocal
@@ -128,10 +127,11 @@ Once completed, these commands will start:
 - 3 `EDC Connectors`
   - _consumer-us_
   - _consumer-eu_
-  - _provider_
+  - _provider_ (which will also be seeded with initial required data using a [postman collection](../deployment/data/MVD.postman_collection.json))
 - A `Registration Service`
 - A `HTTP Nginx Server` (to serve DIDs) 
-- An `Azurite` blob storage service which will also be seeded with initial required data using a [postman collection](../deployment/data/MVD.postman_collection.json).
+- An `Azurite` blob storage service 
+  
 
 _Note, the `Newman` docker container will automatically stop after seeding initial data from postman scripts._
 
