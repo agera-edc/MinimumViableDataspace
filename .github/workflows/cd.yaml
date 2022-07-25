@@ -28,10 +28,11 @@ jobs:
 
       - name: 'Copy Registration Service CLI'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:0.0.1-SNAPSHOT:jar:all -DoutputDirectory=system-tests/resources/cli-tools
-          cd system-tests/resources/cli-tools
-          mv registration-service-cli-0.0.1-SNAPSHOT-all.jar registration-service-cli.jar
-        working-directory: .
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:$REGISTRATION_SERVICE_VERSION:jar:all -DoutputDirectory=.
+          mv registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar registration-service-cli.jar
+        working-directory: system-tests/resources/cli-tools
+        env:
+           REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
 
       - name: 'Run MVD docker-compose'
         run: docker-compose -f system-tests/docker-compose.yml up --build --detach
