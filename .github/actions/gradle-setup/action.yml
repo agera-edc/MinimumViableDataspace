@@ -24,7 +24,7 @@ runs:
         # TODO: change back to upstream repo when https://github.com/agera-edc/IdentityHub/pull/30 is merged
         repository: agera-edc/IdentityHub
         path: IdentityHub
-        ref: feature/25/25-identity-hub-cli
+        ref: 04f77851b929ae0172c0b892d8496706c54a34a7
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
