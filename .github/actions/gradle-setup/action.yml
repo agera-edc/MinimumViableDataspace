@@ -21,7 +21,7 @@ runs:
     - name: Checkout Identity Hub
       uses: actions/checkout@v2
       with:
-        # TODO: change back to upstream repo when https://github.com/agera-edc/IdentityHub/pull/30 is merged
+        # TODO: change back to upstream repo when https://github.com/eclipse-dataspaceconnector/IdentityHub/pull/11 is merged
         repository: agera-edc/IdentityHub
         path: IdentityHub
         ref: 04f77851b929ae0172c0b892d8496706c54a34a7
