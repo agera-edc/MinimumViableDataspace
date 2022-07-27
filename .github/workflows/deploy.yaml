@@ -107,8 +107,8 @@ jobs:
       - name: Checkout DataDashboard
         uses: actions/checkout@v2
         with:
-          repository: eclipse-dataspaceconnector/DataDashboard
-          ref: 6ce10c61d1333e2857b4921d3f02ffb69b4064b7
+          repository: agera-edc/DataDashboard
+          ref: cada8b0c9d41cfffc720e5f5beb2735da15992d4
 
       - name: 'Az CLI login'
         uses: azure/login@v1
