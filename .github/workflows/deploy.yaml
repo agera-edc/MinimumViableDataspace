@@ -388,17 +388,22 @@ jobs:
 
       - name: 'Push region verifiable credential'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:0.0.1-SNAPSHOT:jar:all -DoutputDirectory=.
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:$cli_version:jar:all -DoutputDirectory=.
           
-          echo "sample uuid: $(uuidgen)"
+          id=$(uuidgen)
           
-          java -jar identity-hub-cli-0.0.1-SNAPSHOT-all.jar -s=${EDC_HOST}/api/identity-hub vc add \
-            -c='{"id":"92bbb5be-085f-4150-99fe-e3180dd0cf2d","credentialSubject":{"region":"${{ matrix.region }}"}}' \
-            -s="did:web:${DID_HOST}" \
-            -i="did:web:${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}" \
+          java -jar identity-hub-cli-$cli_version-all.jar -s=$EDC_HOST/api/identity-hub vc add \
+            -c='{"id":"'$id'","credentialSubject":{"region":"'$region'"}}' \
+            -s="did:web:$DID_HOST" \
+            -i="did:web:$issuer" \
             -k="key.pem"
           
-          java -jar identity-hub-cli-0.0.1-SNAPSHOT-all.jar -s=${EDC_HOST}/api/identity-hub vc list
+          java -jar identity-hub-cli-$cli_version-all.jar -s=$EDC_HOST/api/identity-hub vc list
+        env:
+          cli_version: 0.0.1-SNAPSHOT
+          region: ${{ matrix.region }}
+          issuer: ${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}
+
       - name: 'Register participant'
         run: |
           mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:0.0.1-SNAPSHOT:jar:all -DoutputDirectory=.
