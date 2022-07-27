@@ -394,7 +394,7 @@ jobs:
           
           java -jar identity-hub-cli-$cli_version-all.jar -s=$EDC_HOST/api/identity-hub vc add \
             -c='{"id":"'$id'","credentialSubject":{"region":"'$region'"}}' \
-            -s="did:web:$DID_HOST" \
+            -b="did:web:$DID_HOST" \
             -i="did:web:$issuer" \
             -k="key.pem"
           
