@@ -392,17 +392,18 @@ jobs:
           
           id=$(uuidgen)
           
-          java -jar identity-hub-cli-$cli_version-all.jar -s=$EDC_HOST/api/identity-hub vc add \
+          java -jar identity-hub-cli-$cli_version-all.jar -s=$server vc add \
             -c='{"id":"'$id'","credentialSubject":{"region":"'$region'"}}' \
             -b="did:web:$DID_HOST" \
             -i="did:web:$issuer" \
             -k="key.pem"
           
-          java -jar identity-hub-cli-$cli_version-all.jar -s=$EDC_HOST/api/identity-hub vc list
+          java -jar identity-hub-cli-$cli_version-all.jar -s=$server vc list
         env:
           cli_version: 0.0.1-SNAPSHOT
           region: ${{ matrix.region }}
           issuer: ${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}
+          server: http://${{ env.EDC_HOST }}:8181/api/identity-hub
 
       - name: 'Register participant'
         run: |
