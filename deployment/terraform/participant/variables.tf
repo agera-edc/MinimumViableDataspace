@@ -20,7 +20,7 @@ variable "dashboard_image" {
 }
 
 variable "location" {
-  default = "eastus"
+  default = "northeurope"
 }
 
 variable "acr_name" {
