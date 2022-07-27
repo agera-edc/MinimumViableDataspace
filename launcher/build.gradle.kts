@@ -20,6 +20,8 @@ plugins {
 
 val edcVersion: String by project
 val edcGroup: String by project
+val identityHubVersion: String by project
+val identityHubGroup: String by project
 
 dependencies {
     implementation(project(":extensions:refresh-catalog"))
@@ -48,7 +50,13 @@ dependencies {
 
     // Blob storage container provisioning
     implementation("${edcGroup}:blobstorage:${edcVersion}")
-    implementation("${edcGroup}:azure-vault:${edcVersion}")
+    // To use FileSystem vault e.g. -DuseFsVault="true".Only for non-production usages.
+    val useFsVault: Boolean = System.getProperty("useFsVault", "false").toBoolean()
+    if (useFsVault) {
+        implementation("${edcGroup}:filesystem-vault:${edcVersion}")
+    } else {
+        implementation("${edcGroup}:azure-vault:${edcVersion}")
+    }
 
     // Embedded DPF
     implementation("${edcGroup}:data-plane-transfer-client:${edcVersion}")
@@ -60,6 +68,9 @@ dependencies {
 
     // Federated catalog
     implementation("${edcGroup}:catalog-cache:${edcVersion}")
+
+    // Identity Hub
+    implementation("${identityHubGroup}:identity-hub:${identityHubVersion}")
 }
 
 application {

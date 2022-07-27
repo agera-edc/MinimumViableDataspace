@@ -37,8 +37,11 @@ locals {
 
   connector_name = "connector-registration"
 
-  registration_service_dns_label = "${var.prefix}-registration-mvd"
-  edc_default_port               = 8181
+  registration_service_dns_label   = "${var.prefix}-registration-mvd"
+  edc_default_port                 = 8181
+  registration_service_port        = 8182
+  registration_service_path_prefix = "/authority"
+  registration_service_url         = "http://${local.registration_service_dns_label}.${var.location}.azurecontainer.io:${local.registration_service_port}"
 
   dataspace_did_uri = "did:web:${azurerm_storage_account.dataspace_did.primary_web_host}"
   gaiax_did_uri     = "did:web:${azurerm_storage_account.gaiax_did.primary_web_host}"
@@ -79,19 +82,25 @@ resource "azurerm_container_group" "registration-service" {
     memory = var.container_memory
 
     ports {
-      port     = local.edc_default_port
+      port     = local.registration_service_port
       protocol = "TCP"
     }
 
     environment_variables = {
-      EDC_CONNECTOR_NAME = local.connector_name
+      EDC_CONNECTOR_NAME      = local.connector_name
+      JWT_AUDIENCE            = "${local.registration_service_url}${local.registration_service_path_prefix}"
+      WEB_HTTP_AUTHORITY_PORT = local.registration_service_port
+      WEB_HTTP_AUTHORITY_PATH = local.registration_service_path_prefix
     }
 
     liveness_probe {
       http_get {
-        port = 8181
+        port = local.edc_default_port
         path = "/api/check/health"
       }
+      initial_delay_seconds = 10
+      failure_threshold     = 6
+      timeout_seconds       = 3
     }
   }
 }
@@ -132,17 +141,6 @@ resource "azurerm_storage_account" "dataspace_did" {
   account_replication_type = "LRS"
   account_kind             = "StorageV2"
   static_website {}
-}
-
-resource "azurerm_key_vault_secret" "dataspace_did_key" {
-  name = local.connector_name
-  # Create did_key secret only if key_file value is provided. Default key_file value is null.
-  count        = var.key_file_authority == null ? 0 : 1
-  value        = file(var.key_file_authority)
-  key_vault_id = azurerm_key_vault.registrationservice.id
-  depends_on = [
-    azurerm_role_assignment.current-user-secretsofficer
-  ]
 }
 
 resource "azurerm_storage_blob" "dataspace_did" {
