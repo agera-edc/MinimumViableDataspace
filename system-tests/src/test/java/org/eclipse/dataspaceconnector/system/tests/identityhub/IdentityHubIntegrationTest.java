@@ -17,12 +17,12 @@ package org.eclipse.dataspaceconnector.system.tests.identityhub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
+import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -42,17 +42,18 @@ public class IdentityHubIntegrationTest {
             .readTimeout(1, TimeUnit.MINUTES)
             .build();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ConsoleMonitor MONITOR = new ConsoleMonitor();
 
     private IdentityHubClientImpl client;
 
     @BeforeEach
     void setUp() {
-        client = new IdentityHubClientImpl(OK_HTTP_CLIENT, OBJECT_MAPPER);
+        client = new IdentityHubClientImpl(OK_HTTP_CLIENT, OBJECT_MAPPER, MONITOR);
     }
 
     @ParameterizedTest
     @MethodSource("provideHubUrls")
-    void retrieveVerifiableCredentials_empty(String hubUrl) throws IOException {
+    void retrieveVerifiableCredentials_empty(String hubUrl) {
         var vcs = client.getVerifiableCredentials(hubUrl);
 
         assertThat(vcs.succeeded()).isTrue();
