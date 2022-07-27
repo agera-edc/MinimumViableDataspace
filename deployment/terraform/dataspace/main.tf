@@ -41,7 +41,7 @@ locals {
   edc_default_port                 = 8181
   registration_service_port        = 8182
   registration_service_path_prefix = "/authority"
-  registration_service_url         = "http://${local.registration_service_dns_label}.${var.location}.azurecontainer.io:${local.registration_service_port}${registration_service_path_prefix}"
+  registration_service_url         = "http://${local.registration_service_dns_label}.${var.location}.azurecontainer.io:${local.registration_service_port}${local.registration_service_path_prefix}"
 
   dataspace_did_uri = "did:web:${azurerm_storage_account.dataspace_did.primary_web_host}"
   gaiax_did_uri     = "did:web:${azurerm_storage_account.gaiax_did.primary_web_host}"
