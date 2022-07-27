@@ -14,29 +14,65 @@
 
 package org.eclipse.dataspaceconnector.mvd;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.policy.AtomicConstraintFunction;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyContext;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AbsSpatialPositionConstraintFunction implements AtomicConstraintFunction<Permission> {
 
+    private final ObjectMapper OBJECT_MAPPER;
+    private final Monitor MONITOR;
+
+    public AbsSpatialPositionConstraintFunction(ObjectMapper objectMapper, Monitor monitor) {
+        OBJECT_MAPPER = objectMapper;
+        MONITOR = monitor;
+    }
+
     @Override
     public boolean evaluate(Operator operator, Object rightValue, Permission rule, PolicyContext context) {
-        var region = context.getParticipantAgent().getClaims().get("region");
+        var regions = getRegions(context.getParticipantAgent().getClaims());
         switch (operator) {
             case EQ:
-                return Objects.equals(region, rightValue);
-            case NEQ:
-                return !Objects.equals(region, rightValue);
-            case IN:
-                return ((Collection<?>) rightValue).contains(region);
+                return regions.contains(rightValue);
             default:
                 return false;
         }
     }
 
+    List<String> getRegions(Map<String, Object> claims) {
+        return claims.values()
+                .stream().flatMap(x -> getVerifiableCredential(x).stream())
+                .flatMap(vc -> getRegion(vc).stream()).collect(Collectors.toList());
+    }
+
+    private Optional<VerifiableCredential> getVerifiableCredential(Object object) {
+        try {
+            var vcObject = (Map<String, Object>) object;
+            var verifiableCredentialMap = vcObject.get("vc");
+            return Optional.of(OBJECT_MAPPER.convertValue(verifiableCredentialMap, VerifiableCredential.class));
+        } catch (Exception e) {
+            MONITOR.warning("Error getting verifiable credentials", e);
+            return Optional.empty();
+        }
+    }
+
+    private Optional<String> getRegion(VerifiableCredential verifiableCredential) {
+        try {
+            var region = verifiableCredential.getCredentialSubject().get("region");
+            return region == null ? Optional.empty() : Optional.of((String) region);
+        } catch (Exception e) {
+            MONITOR.warning("Error getting region", e);
+            return Optional.empty();
+        }
+
+    }
 }

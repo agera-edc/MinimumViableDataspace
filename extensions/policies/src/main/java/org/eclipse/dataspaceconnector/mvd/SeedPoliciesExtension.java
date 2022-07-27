@@ -16,11 +16,13 @@ package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.spi.contract.offer.ContractDefinitionService;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyEngine;
 import org.eclipse.dataspaceconnector.spi.policy.RuleBindingRegistry;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
+import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 
 import static org.eclipse.dataspaceconnector.spi.policy.PolicyEngine.ALL_SCOPES;
 
@@ -43,6 +45,12 @@ public class SeedPoliciesExtension implements ServiceExtension {
     @Inject
     private PolicyEngine policyEngine;
 
+    @Inject
+    private TypeManager typeManager;
+
+    @Inject
+    private Monitor monitor;
+
     @Override
     public String name() {
         return "Seed policies.";
@@ -58,7 +66,7 @@ public class SeedPoliciesExtension implements ServiceExtension {
         ruleBindingRegistry.bind("USE", ContractDefinitionService.NEGOTIATION_SCOPE);
         ruleBindingRegistry.bind(ABS_SPATIAL_POSITION, ContractDefinitionService.NEGOTIATION_SCOPE);
 
-        policyEngine.registerFunction(ALL_SCOPES, Permission.class, ABS_SPATIAL_POSITION, new AbsSpatialPositionConstraintFunction());
+        policyEngine.registerFunction(ALL_SCOPES, Permission.class, ABS_SPATIAL_POSITION, new AbsSpatialPositionConstraintFunction(typeManager.getMapper(), monitor));
     }
 
 }
