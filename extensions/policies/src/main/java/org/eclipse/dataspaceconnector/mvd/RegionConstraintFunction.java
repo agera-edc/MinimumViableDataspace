@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 public class RegionConstraintFunction implements AtomicConstraintFunction<Permission> {
     private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
+    private static final String REGION_KEY = "region";
     private final ObjectMapper objectMapper;
     private final Monitor monitor;
 
@@ -67,7 +68,7 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
 
     private Optional<String> getRegion(VerifiableCredential verifiableCredential) {
         try {
-            var region = verifiableCredential.getCredentialSubject().get("region");
+            var region = verifiableCredential.getCredentialSubject().get(REGION_KEY);
             return region == null ? Optional.empty() : Optional.of((String) region);
         } catch (Exception e) {
             monitor.warning("Error getting region", e);

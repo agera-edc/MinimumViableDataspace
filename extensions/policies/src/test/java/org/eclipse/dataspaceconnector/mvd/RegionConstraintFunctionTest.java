@@ -38,18 +38,19 @@ public class RegionConstraintFunctionTest {
     static final Monitor MONITOR = new ConsoleMonitor();
     static final RegionConstraintFunction CONSTRAINT_FUNCTION = new RegionConstraintFunction(OBJECT_MAPPER, MONITOR);
     static final Permission PERMISSION = Permission.Builder.newInstance().build();
+    static final String REGION_KEY = "region";
     static final String EXPECTED_REGION = "eu";
 
     @Test
     public void verifyPolicy_validRegion() {
-        var claims = toMappedVerifiableCredentials(Map.of("region", EXPECTED_REGION));
+        var claims = toMappedVerifiableCredentials(Map.of(REGION_KEY, EXPECTED_REGION));
         var policyContext = getPolicyContext(claims);
         assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.EQ, EXPECTED_REGION, PERMISSION, policyContext)).isTrue();
     }
 
     @Test
     public void verifyPolicy_invalidRegion() {
-        var claims = toMappedVerifiableCredentials(Map.of("region", "us"));
+        var claims = toMappedVerifiableCredentials(Map.of(REGION_KEY, "us"));
         var policyContext = getPolicyContext(claims);
         assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.EQ, EXPECTED_REGION, PERMISSION, policyContext)).isFalse();
     }
@@ -64,14 +65,14 @@ public class RegionConstraintFunctionTest {
     @Test
     public void verifyPolicy_invalidRegionFormat() {
         // Region is a map instead of a string.
-        var claims = toMappedVerifiableCredentials(Map.of("region", Map.of()));
+        var claims = toMappedVerifiableCredentials(Map.of(REGION_KEY, Map.of()));
         var policyContext = getPolicyContext(claims);
         assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.EQ, EXPECTED_REGION, PERMISSION, policyContext)).isFalse();
     }
 
     @Test
     public void verifyPolicy_unsupportedOperator() {
-        var claims = toMappedVerifiableCredentials(Map.of("region", EXPECTED_REGION));
+        var claims = toMappedVerifiableCredentials(Map.of(REGION_KEY, EXPECTED_REGION));
         var policyContext = getPolicyContext(claims);
         assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.GT, EXPECTED_REGION, PERMISSION, policyContext)).isFalse();
     }
