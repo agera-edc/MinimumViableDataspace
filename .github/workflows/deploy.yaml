@@ -397,6 +397,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: authoritykey
+          path: deployment/terraform/dataspace
 
       - name: 'Push region verifiable credential'
         run: |
