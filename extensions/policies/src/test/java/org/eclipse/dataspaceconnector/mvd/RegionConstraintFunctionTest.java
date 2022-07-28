@@ -37,8 +37,7 @@ public class RegionConstraintFunctionTest {
     static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     static final Monitor MONITOR = new ConsoleMonitor();
     static final RegionConstraintFunction CONSTRAINT_FUNCTION = new RegionConstraintFunction(OBJECT_MAPPER, MONITOR);
-    final static Permission PERMISSION = Permission.Builder.newInstance().build();
-
+    static final Permission PERMISSION = Permission.Builder.newInstance().build();
 
     @Test
     public void verifyPolicy_validRegion() {
@@ -65,7 +64,8 @@ public class RegionConstraintFunctionTest {
     @Test
     public void verifyPolicy_unsupportedOperator() {
         var expectedRegion = "eu";
-        var claims = toMappedVerifiableCredentials(Map.of("region", expectedRegion));        var policyContext = getPolicyContext(claims);
+        var claims = toMappedVerifiableCredentials(Map.of("region", expectedRegion));
+        var policyContext = getPolicyContext(claims);
         assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.GT, "eu", PERMISSION, policyContext)).isFalse();
     }
 
