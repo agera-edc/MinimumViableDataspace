@@ -34,6 +34,7 @@ import static java.util.stream.Collectors.toMap;
 
 /**
  * Mock credentials verifier that simply returns claims parsed from the URL configured for the identity hub.
+ * It will be replaced soon by the IdentityHubCredentialsVerifier.
  */
 public class MockCredentialsVerifier implements CredentialsVerifier {
     private final Monitor monitor;
@@ -48,7 +49,9 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
      * The URL is not accessed, and URL parts other than the query string are unimportant.
      * <p>
      * For example, if {@code hubBaseUrl} is {@code http://dummy.site/foo?region=us&tier=GOLD}, the verifier
-     * returns {@code Map.of("region", "us", "tier", "GOLD"}.
+     * returns {@code
+     * Map.of("vcId, Map.of("vc", Map.of("credentialSubject", Map.of("region", "us", "tier", "GOLD")),
+     *                            Map.of("iss", "someIssuer")))}
      *
      * @param hubBaseUrl      the URL used to parse the query string.
      * @param othersPublicKey unused.
