@@ -12,9 +12,10 @@
  *
  */
 
+package org.eclipse.dataspaceconnector.mvd;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.dataspaceconnector.core.base.policy.PolicyContextImpl;
-import org.eclipse.dataspaceconnector.mvd.RegionConstraintFunction;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.spi.agent.ParticipantAgent;
@@ -55,7 +56,7 @@ public class RegionConstraintFunctionTest {
     }
 
     @Test
-    public void verifyPolicy_invalidVCFormat() {
+    public void verifyPolicy_invalidClaimFormat() {
         var claims = toMappedVerifiableCredentials(Map.of());
         var policyContext = getPolicyContext(claims);
         assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.EQ, "eu", PERMISSION, policyContext)).isFalse();
