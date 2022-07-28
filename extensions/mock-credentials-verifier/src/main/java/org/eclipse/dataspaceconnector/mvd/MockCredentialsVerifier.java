@@ -74,10 +74,6 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
         }
     }
 
-    /**
-     * For test purpose
-     * @return
-     */
     private Map<String, Object> toMappedVerifiableCredentials(Map<String, Object> regionClaims) {
         var verifiableCredential = VerifiableCredential.Builder.newInstance()
                 .credentialSubject(regionClaims)
