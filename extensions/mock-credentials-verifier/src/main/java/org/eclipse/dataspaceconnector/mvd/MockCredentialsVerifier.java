@@ -39,6 +39,7 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
     private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
     private static final String VERIFIABLE_CREDENTIAL_ID_KEY = "id";
     private static final String CREDENTIAL_SUBJECT_KEY = "credentialSubject";
+    private static final String ISSUER_KEY = "iss";
     private final Monitor monitor;
 
     public MockCredentialsVerifier(Monitor monitor) {
@@ -85,6 +86,6 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
                 Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of(CREDENTIAL_SUBJECT_KEY, regionClaims,
                                 VERIFIABLE_CREDENTIAL_ID_KEY, vcId),
                         // issuer will be ignored when applying policies for now.
-                        "iss", String.join("did:web:", UUID.randomUUID().toString())));
+                        ISSUER_KEY, String.join("did:web:", UUID.randomUUID().toString())));
     }
 }

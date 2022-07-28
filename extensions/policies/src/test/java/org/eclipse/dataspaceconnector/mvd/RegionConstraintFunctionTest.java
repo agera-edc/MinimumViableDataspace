@@ -40,6 +40,7 @@ public class RegionConstraintFunctionTest {
     static final Permission PERMISSION = Permission.Builder.newInstance().build();
     static final String REGION_KEY = "region";
     static final String EXPECTED_REGION = "eu";
+    static final String ISSUER_KEY = "iss";
 
     @Test
     public void verifyPolicy_validRegion() {
@@ -87,6 +88,6 @@ public class RegionConstraintFunctionTest {
                 Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of(CREDENTIAL_SUBJECT_KEY, regionClaims,
                                                          VERIFIABLE_CREDENTIAL_ID_KEY, vcId),
                         // issuer will be ignored when applying policies for now.
-                        "iss", String.join("did:web:", UUID.randomUUID().toString())));
+                        ISSUER_KEY, String.join("did:web:", UUID.randomUUID().toString())));
     }
 }
