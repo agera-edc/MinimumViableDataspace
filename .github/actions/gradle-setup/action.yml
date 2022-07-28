@@ -21,10 +21,9 @@ runs:
     - name: Checkout Identity Hub
       uses: actions/checkout@v2
       with:
-        # TODO: change back to upstream repo when https://github.com/eclipse-dataspaceconnector/IdentityHub/pull/12 is merged
-        repository: agera-edc/IdentityHub
+        repository: eclipse-dataspaceconnector/IdentityHub
         path: IdentityHub
-        ref: 04f77851b929ae0172c0b892d8496706c54a34a7
+        ref: 7c6908f9a7448dbc787e1afe505c49370f5f6671
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
