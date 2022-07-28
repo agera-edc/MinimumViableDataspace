@@ -37,6 +37,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class MockCredentialsVerifier implements CredentialsVerifier {
     private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
+    private static final String VERIFIABLE_CREDENTIAL_ID_KEY = "id";
     private static final String CREDENTIAL_SUBJECT_KEY = "credentialSubject";
     private final Monitor monitor;
 
@@ -79,10 +80,10 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
     }
 
     private Map<String, Object> toMappedVerifiableCredentials(Map<String, Object> regionClaims) {
-
         var vcId = UUID.randomUUID().toString();
         return Map.of(vcId,
-                Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of(CREDENTIAL_SUBJECT_KEY, regionClaims),
+                Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of(CREDENTIAL_SUBJECT_KEY, regionClaims,
+                                VERIFIABLE_CREDENTIAL_ID_KEY, vcId),
                         // issuer will be ignored when applying policies for now.
                         "iss", String.join("did:web:", UUID.randomUUID().toString())));
     }
