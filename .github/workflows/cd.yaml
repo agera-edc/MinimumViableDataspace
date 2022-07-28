@@ -34,6 +34,14 @@ jobs:
         env:
            REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
 
+      - name: 'Copy Identity Hub CLI'
+        run: |
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:IDENTITY_HUB_VERSION:jar:all -DoutputDirectory=.
+          mv identity-hub-cli-IDENTITY_HUB_VERSION-all.jar identity-hub-cli.jar
+        working-directory: system-tests/resources/cli-tools
+        env:
+          IDENTITY_HUB_VERSION: 0.0.1-SNAPSHOT
+
       - name: 'Run MVD docker-compose'
         run: docker-compose -f system-tests/docker-compose.yml up --build --detach
         timeout-minutes: 10
