@@ -14,7 +14,7 @@
 
 package org.eclipse.dataspaceconnector.mvd;
 
-import org.eclipse.dataspaceconnector.policy.model.Permission;
+import org.eclipse.dataspaceconnector.policy.model.Duty;
 import org.eclipse.dataspaceconnector.spi.contract.offer.ContractDefinitionService;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyEngine;
@@ -66,7 +66,7 @@ public class SeedPoliciesExtension implements ServiceExtension {
         ruleBindingRegistry.bind("USE", ContractDefinitionService.NEGOTIATION_SCOPE);
         ruleBindingRegistry.bind(ABS_SPATIAL_POSITION, ContractDefinitionService.NEGOTIATION_SCOPE);
 
-        policyEngine.registerFunction(ALL_SCOPES, Permission.class, ABS_SPATIAL_POSITION, new RegionConstraintFunction(typeManager.getMapper(), monitor));
+        policyEngine.registerFunction(ALL_SCOPES, Duty.class, ABS_SPATIAL_POSITION, new RegionConstraintFunction(typeManager.getMapper(), monitor));
     }
 
 }
