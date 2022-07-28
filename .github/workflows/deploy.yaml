@@ -276,7 +276,7 @@ jobs:
       - name: 'Generate Participant key'
         uses: ./.github/actions/generate-key
         with:
-          keyFileNamePrefix: key
+          keyFileNamePrefix: participantkey
           directory: deployment/terraform/participant
 
       - name: 'Create tfvars file'
