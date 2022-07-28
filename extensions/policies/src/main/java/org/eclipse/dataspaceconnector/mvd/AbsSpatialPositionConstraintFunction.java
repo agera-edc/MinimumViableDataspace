@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
 
 public class AbsSpatialPositionConstraintFunction implements AtomicConstraintFunction<Permission> {
 
-    private final ObjectMapper OBJECT_MAPPER;
-    private final Monitor MONITOR;
+    private final ObjectMapper objectMapper;
+    private final Monitor monitor;
 
     public AbsSpatialPositionConstraintFunction(ObjectMapper objectMapper, Monitor monitor) {
-        OBJECT_MAPPER = objectMapper;
-        MONITOR = monitor;
+        this.objectMapper = objectMapper;
+        this.monitor = monitor;
     }
 
     @Override
@@ -58,9 +58,9 @@ public class AbsSpatialPositionConstraintFunction implements AtomicConstraintFun
         try {
             var vcObject = (Map<String, Object>) object;
             var verifiableCredentialMap = vcObject.get("vc");
-            return Optional.of(OBJECT_MAPPER.convertValue(verifiableCredentialMap, VerifiableCredential.class));
+            return Optional.of(objectMapper.convertValue(verifiableCredentialMap, VerifiableCredential.class));
         } catch (Exception e) {
-            MONITOR.warning("Error getting verifiable credentials", e);
+            monitor.warning("Error getting verifiable credentials", e);
             return Optional.empty();
         }
     }
@@ -70,7 +70,7 @@ public class AbsSpatialPositionConstraintFunction implements AtomicConstraintFun
             var region = verifiableCredential.getCredentialSubject().get("region");
             return region == null ? Optional.empty() : Optional.of((String) region);
         } catch (Exception e) {
-            MONITOR.warning("Error getting region", e);
+            monitor.warning("Error getting region", e);
             return Optional.empty();
         }
 
