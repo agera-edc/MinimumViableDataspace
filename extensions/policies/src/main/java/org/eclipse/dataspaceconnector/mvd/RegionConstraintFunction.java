@@ -16,8 +16,8 @@ package org.eclipse.dataspaceconnector.mvd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
+import org.eclipse.dataspaceconnector.policy.model.Duty;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
-import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.policy.AtomicConstraintFunction;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyContext;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class RegionConstraintFunction implements AtomicConstraintFunction<Permission> {
+public class RegionConstraintFunction implements AtomicConstraintFunction<Duty> {
 
     private final ObjectMapper objectMapper;
     private final Monitor monitor;
@@ -38,7 +38,7 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
     }
 
     @Override
-    public boolean evaluate(Operator operator, Object rightValue, Permission rule, PolicyContext context) {
+    public boolean evaluate(Operator operator, Object rightValue, Duty rule, PolicyContext context) {
         var regions = getRegions(context.getParticipantAgent().getClaims());
         switch (operator) {
             case EQ:
