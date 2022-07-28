@@ -34,13 +34,18 @@ class MockCredentialsVerifierTest {
     void verifyCredentials() {
         Result<Map<String, Object>> actual = verifier.verifyCredentials("http://dummy.site/foo?region=us&tier=GOLD", wrapper);
         assertThat(actual.succeeded()).isTrue();
-        assertThat(actual.getContent())
-                .isEqualTo(Map.of("region", "us", "tier", "GOLD"));
+        assertThat(extractClaims(actual.getContent())).isEqualTo(Map.of("region", "us", "tier", "GOLD"));
     }
 
     @Test
     void verifyCredentials_failsOnMalformedUrl() {
         assertThatThrownBy(() -> verifier.verifyCredentials("malformed_url", wrapper))
                 .isInstanceOf(EdcException.class);
+    }
+
+    private Map<String, Object> extractClaims(Map<String, Object> verifiableCredentials) {
+        var vcObject = (Map<String, Object>) verifiableCredentials.values().stream().findFirst().get();
+        var vc = (Map<String, Object>) vcObject.get("vc");
+        return (Map<String, Object>)vc.get("credentialSubject");
     }
 }
