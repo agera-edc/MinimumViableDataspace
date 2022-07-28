@@ -271,6 +271,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      # FIXME move down
+      - uses: actions/download-artifact@v3
+        with:
+          name: authoritykey
+          path: deployment/terraform/dataspace
+
+      # FIXME remove
+      - name: 'find'
+        run: find .
+
       - uses: ./.github/actions/gradle-setup
 
       - name: 'Generate Participant key'
@@ -393,11 +404,6 @@ jobs:
           npm install -g newman
           deployment/seed-data.sh
         working-directory: .
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: authoritykey
-          path: deployment/terraform/dataspace
 
       - name: 'Push region verifiable credential'
         run: |
