@@ -16,7 +16,6 @@ package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
-import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
@@ -79,13 +78,11 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
     }
 
     private Map<String, Object> toMappedVerifiableCredentials(Map<String, Object> regionClaims) {
-        var verifiableCredential = VerifiableCredential.Builder.newInstance()
-                .credentialSubject(regionClaims)
-                .id(UUID.randomUUID().toString()).build();
 
-        return Map.of(verifiableCredential.getId(),
-                Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of("credentialSubject", verifiableCredential.getCredentialSubject(),
-                                "id", verifiableCredential.getId()),
+        var vcId = UUID.randomUUID().toString();
+        return Map.of(vcId,
+                Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of("credentialSubject", regionClaims,
+                                "id", vcId),
                         // issuer will be ignored when applying policies for now.
                         "iss", String.join("did:web:", UUID.randomUUID().toString())));
     }
