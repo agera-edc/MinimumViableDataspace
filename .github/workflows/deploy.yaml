@@ -231,8 +231,8 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: authoritykey
-          path: deployment/terraform/dataspace/authoritykey.pem
+          name: gaiaxkey
+          path: deployment/terraform/dataspace/gaiaxkey.pem
 
   # Deploy dataspace participants in parallel.
   Deploy-Participants:
@@ -397,7 +397,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: authoritykey
+          name: gaiaxkey
           path: deployment/terraform/participant
 
       - name: 'Push region verifiable credential'
@@ -410,7 +410,7 @@ jobs:
             -c='{"id":"'$id'","credentialSubject":{"region":"'$region'"}}' \
             -b="did:web:$DID_HOST" \
             -i="did:web:$issuer" \
-            -k="authoritykey.pem"
+            -k="gaiaxkey.pem"
           
           java -jar identity-hub-cli-$cli_version-all.jar -s=$server vc list
         env:
