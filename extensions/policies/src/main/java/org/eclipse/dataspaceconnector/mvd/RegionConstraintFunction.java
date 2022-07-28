@@ -73,6 +73,5 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
             monitor.warning("Error getting region", e);
             return Optional.empty();
         }
-
     }
 }
