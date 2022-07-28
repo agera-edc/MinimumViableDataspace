@@ -272,16 +272,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # FIXME move down
-      - uses: actions/download-artifact@v3
-        with:
-          name: authoritykey
-          path: deployment/terraform/participant
-
-      # FIXME remove
-      - name: 'find'
-        run: find .
-
       - uses: ./.github/actions/gradle-setup
 
       - name: 'Generate Participant key'
@@ -405,6 +395,11 @@ jobs:
           deployment/seed-data.sh
         working-directory: .
 
+      - uses: actions/download-artifact@v3
+        with:
+          name: authoritykey
+          path: deployment/terraform/participant
+
       - name: 'Push region verifiable credential'
         run: |
           mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:$cli_version:jar:all -DoutputDirectory=.
@@ -430,7 +425,7 @@ jobs:
           java -jar registration-service-cli-0.0.1-SNAPSHOT-all.jar \
             -s $REGISTRATION_SERVICE_API_URL \
             -d did:web:$DID_HOST \
-            -k key.pem \
+            -k participantkey.pem \
             participants add \
             --ids-url "http://${{ env.EDC_HOST }}:8282"
         env:
