@@ -36,8 +36,8 @@ jobs:
 
       - name: 'Copy Identity Hub CLI'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:IDENTITY_HUB_VERSION:jar:all -DoutputDirectory=.
-          mv identity-hub-cli-IDENTITY_HUB_VERSION-all.jar identity-hub-cli.jar
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:$IDENTITY_HUB_VERSION:jar:all -DoutputDirectory=.
+          mv identity-hub-cli-$IDENTITY_HUB_VERSION-all.jar identity-hub-cli.jar
         working-directory: system-tests/resources/cli-tools
         env:
           IDENTITY_HUB_VERSION: 0.0.1-SNAPSHOT
