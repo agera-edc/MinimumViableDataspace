@@ -85,7 +85,7 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
         return Map.of(verifiableCredential.getId(),
                 Map.of("vc", Map.of("credentialSubject", verifiableCredential.getCredentialSubject(),
                                 "id", verifiableCredential.getId()),
-                        // Will be ignored for now
-                        "iss", UUID.randomUUID().toString()));
+                        // issuer will be ignored when applying policies for now.
+                        "iss", String.join("did:web:", UUID.randomUUID().toString())));
     }
 }
