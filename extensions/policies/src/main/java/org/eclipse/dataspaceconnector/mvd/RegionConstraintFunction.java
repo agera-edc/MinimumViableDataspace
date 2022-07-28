@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RegionConstraintFunction implements AtomicConstraintFunction<Permission> {
-
+    private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
     private final ObjectMapper objectMapper;
     private final Monitor monitor;
 
@@ -57,7 +57,7 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
     private Optional<VerifiableCredential> getVerifiableCredential(Object object) {
         try {
             var vcObject = (Map<String, Object>) object;
-            var verifiableCredentialMap = vcObject.get("vc");
+            var verifiableCredentialMap = vcObject.get(VERIFIABLE_CREDENTIAL_KEY);
             return Optional.of(objectMapper.convertValue(verifiableCredentialMap, VerifiableCredential.class));
         } catch (Exception e) {
             monitor.warning("Error getting verifiable credentials", e);

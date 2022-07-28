@@ -37,6 +37,7 @@ import static java.util.stream.Collectors.toMap;
  * It will be replaced soon by the IdentityHubCredentialsVerifier.
  */
 public class MockCredentialsVerifier implements CredentialsVerifier {
+    private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
     private final Monitor monitor;
 
     public MockCredentialsVerifier(Monitor monitor) {
@@ -83,7 +84,7 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
                 .id(UUID.randomUUID().toString()).build();
 
         return Map.of(verifiableCredential.getId(),
-                Map.of("vc", Map.of("credentialSubject", verifiableCredential.getCredentialSubject(),
+                Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of("credentialSubject", verifiableCredential.getCredentialSubject(),
                                 "id", verifiableCredential.getId()),
                         // issuer will be ignored when applying policies for now.
                         "iss", String.join("did:web:", UUID.randomUUID().toString())));

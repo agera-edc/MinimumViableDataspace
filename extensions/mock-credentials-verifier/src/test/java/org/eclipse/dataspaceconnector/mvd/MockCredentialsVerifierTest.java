@@ -27,6 +27,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 class MockCredentialsVerifierTest {
+    private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
+    private static final String CREDENTIAL_SUBJECT_KEY = "credentialSubject";
     MockCredentialsVerifier verifier = new MockCredentialsVerifier(new ConsoleMonitor());
     PublicKeyWrapper wrapper = mock(PublicKeyWrapper.class);
 
@@ -45,7 +47,7 @@ class MockCredentialsVerifierTest {
 
     private Map<String, Object> extractClaims(Map<String, Object> verifiableCredentials) {
         var vcObject = (Map<String, Object>) verifiableCredentials.values().stream().findFirst().get();
-        var vc = (Map<String, Object>) vcObject.get("vc");
-        return (Map<String, Object>) vc.get("credentialSubject");
+        var vc = (Map<String, Object>) vcObject.get(VERIFIABLE_CREDENTIAL_KEY);
+        return (Map<String, Object>) vc.get(CREDENTIAL_SUBJECT_KEY);
     }
 }
