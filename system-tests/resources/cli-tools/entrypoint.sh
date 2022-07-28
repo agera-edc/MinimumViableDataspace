@@ -21,6 +21,6 @@ for participant in "${PARTICIPANTS[@]}"; do
     java -jar identity-hub-cli.jar -s="http://$participantName:8181/api/identity-hub" vc add \
                 -c='{"id":"'$vcId'","credentialSubject":{"region":"'$region'"}}' \
                 -b="$did" \
-                -i="did:web:did-server:registration-service" \
-                -k="/resources/vault/registration-service/private-key.pem"
+                -i="did:web:did-server:gaia-x" \
+                -k="/resources/vault/gaia-x/private-key.pem"
 done
