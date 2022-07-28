@@ -276,7 +276,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: authoritykey
-          path: deployment/terraform/dataspace
+          path: deployment/terraform/participant
 
       # FIXME remove
       - name: 'find'
