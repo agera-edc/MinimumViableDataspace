@@ -14,5 +14,6 @@ dependencies {
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+    implementation("${edcGroup}.identityhub:identity-hub-spi:${edcVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
 }

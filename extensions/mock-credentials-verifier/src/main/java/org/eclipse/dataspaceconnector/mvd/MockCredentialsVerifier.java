@@ -16,6 +16,7 @@ package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
+import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
@@ -24,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static java.net.URLDecoder.decode;
@@ -66,9 +68,25 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
                             s -> (Object) decode(s[1], UTF_8)
                     ));
             monitor.debug("Completing (mock) credential verification. Claims: " + claims);
-            return Result.success(claims);
+            return Result.success(toMappedVerifiableCredentials(claims));
         } catch (MalformedURLException e) {
             throw new EdcException(e);
         }
+    }
+
+    /**
+     * For test purpose
+     * @return
+     */
+    private Map<String, Object> toMappedVerifiableCredentials(Map<String, Object> regionClaims) {
+        var verifiableCredential = VerifiableCredential.Builder.newInstance()
+                .credentialSubject(regionClaims)
+                .id(UUID.randomUUID().toString()).build();
+
+        return Map.of(verifiableCredential.getId(),
+                Map.of("vc", Map.of("credentialSubject", verifiableCredential.getCredentialSubject(),
+                                "id", verifiableCredential.getId()),
+                        // Will be ignored for now
+                        "iss", UUID.randomUUID().toString()));
     }
 }
