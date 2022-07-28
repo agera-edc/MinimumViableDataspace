@@ -46,6 +46,6 @@ class MockCredentialsVerifierTest {
     private Map<String, Object> extractClaims(Map<String, Object> verifiableCredentials) {
         var vcObject = (Map<String, Object>) verifiableCredentials.values().stream().findFirst().get();
         var vc = (Map<String, Object>) vcObject.get("vc");
-        return (Map<String, Object>)vc.get("credentialSubject");
+        return (Map<String, Object>) vc.get("credentialSubject");
     }
 }
