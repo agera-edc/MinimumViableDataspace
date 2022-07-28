@@ -58,7 +58,7 @@ public class RegionConstraintFunctionTest {
 
     @Test
     public void verifyPolicy_invalidClaimFormat() {
-        var claims = Map.of(UUID.randomUUID().toString(), (Object)UUID.randomUUID().toString());
+        var claims = Map.of(UUID.randomUUID().toString(), (Object) UUID.randomUUID().toString());
         var policyContext = getPolicyContext(claims);
         assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.EQ, EXPECTED_REGION, PERMISSION, policyContext)).isFalse();
     }
