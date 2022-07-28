@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RegionConstraintFunctionTest {
 
     static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
+    static final String CREDENTIAL_SUBJECT_KEY = "credentialSubject";
     final ObjectMapper objectMapper = new ObjectMapper();
     final Monitor monitor = new ConsoleMonitor();
     final RegionConstraintFunction constraintFunction = new RegionConstraintFunction(objectMapper, monitor);
@@ -52,8 +53,7 @@ public class RegionConstraintFunctionTest {
     private Map<String, Object> toMappedVerifiableCredentials(Map<String, Object> regionClaims) {
         var vcId = UUID.randomUUID().toString();
         return Map.of(vcId,
-                Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of("credentialSubject", regionClaims,
-                                "id", vcId),
+                Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of(CREDENTIAL_SUBJECT_KEY, regionClaims),
                         // issuer will be ignored when applying policies for now.
                         "iss", String.join("did:web:", UUID.randomUUID().toString())));
     }
