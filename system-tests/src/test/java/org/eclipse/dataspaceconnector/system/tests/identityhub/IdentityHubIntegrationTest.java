@@ -22,6 +22,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -51,7 +52,7 @@ public class IdentityHubIntegrationTest {
 
     @ParameterizedTest
     @MethodSource("provideHubUrls")
-    void retrieveVerifiableCredentials_empty(String hubUrl) throws Exception {
+    void retrieveVerifiableCredentials_empty(String hubUrl) throws IOException {
         var vcs = client.getVerifiableCredentials(hubUrl);
 
         assertThat(vcs.succeeded()).isTrue();
