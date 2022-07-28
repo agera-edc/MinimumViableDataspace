@@ -226,9 +226,6 @@ jobs:
       - name: 'Verify Dataspace DID endpoint is available'
         run: curl https://${{ steps.runterraform.outputs.dataspace_did_host }}/.well-known/did.json | jq '.id'
 
-      - name: 'Verify deployed Registration Service is healthy'
-        run: curl --retry 10 --retry-all-errors --fail ${{ steps.runterraform.outputs.registration_service_url }}/api/check/health
-
       - uses: actions/upload-artifact@v3
         with:
           name: gaiaxkey
