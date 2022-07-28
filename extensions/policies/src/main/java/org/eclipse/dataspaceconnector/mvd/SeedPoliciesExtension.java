@@ -66,7 +66,7 @@ public class SeedPoliciesExtension implements ServiceExtension {
         ruleBindingRegistry.bind("USE", ContractDefinitionService.NEGOTIATION_SCOPE);
         ruleBindingRegistry.bind(ABS_SPATIAL_POSITION, ContractDefinitionService.NEGOTIATION_SCOPE);
 
-        policyEngine.registerFunction(ALL_SCOPES, Permission.class, ABS_SPATIAL_POSITION, new AbsSpatialPositionConstraintFunction(typeManager.getMapper(), monitor));
+        policyEngine.registerFunction(ALL_SCOPES, Permission.class, ABS_SPATIAL_POSITION, new RegionConstraintFunction(typeManager.getMapper(), monitor));
     }
 
 }

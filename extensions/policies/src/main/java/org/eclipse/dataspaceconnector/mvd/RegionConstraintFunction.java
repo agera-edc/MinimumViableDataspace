@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class AbsSpatialPositionConstraintFunction implements AtomicConstraintFunction<Permission> {
+public class RegionConstraintFunction implements AtomicConstraintFunction<Permission> {
 
     private final ObjectMapper objectMapper;
     private final Monitor monitor;
 
-    public AbsSpatialPositionConstraintFunction(ObjectMapper objectMapper, Monitor monitor) {
+    public RegionConstraintFunction(ObjectMapper objectMapper, Monitor monitor) {
         this.objectMapper = objectMapper;
         this.monitor = monitor;
     }
