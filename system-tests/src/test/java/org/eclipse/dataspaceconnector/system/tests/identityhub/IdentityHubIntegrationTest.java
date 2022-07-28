@@ -16,7 +16,9 @@ package org.eclipse.dataspaceconnector.system.tests.identityhub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
+import com.nimbusds.jwt.SignedJWT;
 import okhttp3.OkHttpClient;
+import org.assertj.core.api.ObjectAssert;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
 import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +29,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TestUtils.requiredPropOrEnv;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -55,10 +59,9 @@ public class IdentityHubIntegrationTest {
     @ParameterizedTest
     @MethodSource("provideHubUrls")
     void retrieveVerifiableCredentials(String hubUrl, String region) {
-        var vcs = client.getVerifiableCredentials(hubUrl);
+        await().atMost(20, SECONDS).untilAsserted(() -> singleVcInIdentityHub(hubUrl));
 
-        assertThat(vcs.succeeded()).isTrue();
-        assertThat(vcs.getContent()).singleElement()
+        singleVcInIdentityHub(hubUrl)
                 .satisfies(jwt -> {
                     var claims = jwt.getJWTClaimsSet();
                     assertThat(claims.getIssuer()).as("Issuer is a Web DID").startsWith("did:web:");
@@ -81,6 +84,13 @@ public class IdentityHubIntegrationTest {
                             })
                     ;
                 });
+    }
+
+    private ObjectAssert<SignedJWT> singleVcInIdentityHub(String hubUrl) {
+        var vcs = client.getVerifiableCredentials(hubUrl);
+
+        assertThat(vcs.succeeded()).isTrue();
+        return assertThat(vcs.getContent()).singleElement();
     }
 
     private static Stream<Arguments> provideHubUrls() {
