@@ -51,7 +51,7 @@ public class IdentityHubIntegrationTest {
 
     @ParameterizedTest
     @MethodSource("provideHubUrls")
-    void retrieveVerifiableCredentials_empty(String hubUrl) {
+    void retrieveVerifiableCredentials_empty(String hubUrl) throws Exception {
         var vcs = client.getVerifiableCredentials(hubUrl);
 
         assertThat(vcs.succeeded()).isTrue();
