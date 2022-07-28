@@ -15,6 +15,7 @@
 package org.eclipse.dataspaceconnector.system.tests.identityhub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.shaded.json.JSONObject;
 import okhttp3.OkHttpClient;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
 import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
@@ -23,7 +24,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -54,18 +54,40 @@ public class IdentityHubIntegrationTest {
 
     @ParameterizedTest
     @MethodSource("provideHubUrls")
-    void retrieveVerifiableCredentials_empty(String hubUrl) throws IOException {
+    void retrieveVerifiableCredentials(String hubUrl, String region) {
         var vcs = client.getVerifiableCredentials(hubUrl);
 
         assertThat(vcs.succeeded()).isTrue();
-        assertThat(vcs.getContent()).isEmpty();
+        assertThat(vcs.getContent()).singleElement()
+                .satisfies(jwt -> {
+                    var claims = jwt.getJWTClaimsSet();
+                    assertThat(claims.getIssuer()).as("Issuer is a Web DID").startsWith("did:web:");
+                    assertThat(claims.getSubject()).as("Subject is a Web DID").startsWith("did:web:");
+                    assertThat(claims.getClaim("vc")).as("VC")
+                            .isInstanceOfSatisfying(JSONObject.class, t -> {
+
+                                assertThat(t.get("id"))
+                                        .as("VC ID")
+                                        .isInstanceOfSatisfying(String.class, s -> assertThat(s).isNotBlank());
+
+                                assertThat(t.get("credentialSubject"))
+                                        .as("VC credentialSubject")
+                                        .isInstanceOfSatisfying(JSONObject.class,
+                                                s -> assertThat(s.get("region"))
+                                                        .as("region")
+                                                        .isInstanceOfSatisfying(String.class,
+                                                                r -> assertThat(r).isEqualTo(region)));
+
+                            })
+                    ;
+                });
     }
 
     private static Stream<Arguments> provideHubUrls() {
         return Stream.of(
-                arguments(PROVIDER_IDENTITY_HUB_URL),
-                arguments(CONSUMER_EU_IDENTITY_HUB_URL),
-                arguments(CONSUMER_US_IDENTITY_HUB_URL)
+                arguments(PROVIDER_IDENTITY_HUB_URL, "eu"),
+                arguments(CONSUMER_EU_IDENTITY_HUB_URL, "eu"),
+                arguments(CONSUMER_US_IDENTITY_HUB_URL, "us")
         );
     }
 }
