@@ -31,16 +31,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RegionConstraintFunctionTest {
 
-    static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
-    static final String VERIFIABLE_CREDENTIAL_ID_KEY = "id";
-    static final String CREDENTIAL_SUBJECT_KEY = "credentialSubject";
-    static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    static final Monitor MONITOR = new ConsoleMonitor();
-    static final RegionConstraintFunction CONSTRAINT_FUNCTION = new RegionConstraintFunction(OBJECT_MAPPER, MONITOR);
-    static final Permission PERMISSION = Permission.Builder.newInstance().build();
-    static final String REGION_KEY = "region";
-    static final String EXPECTED_REGION = "eu";
-    static final String ISSUER_KEY = "iss";
+    private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
+    private static final String VERIFIABLE_CREDENTIAL_ID_KEY = "id";
+    private static final String CREDENTIAL_SUBJECT_KEY = "credentialSubject";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final Monitor MONITOR = new ConsoleMonitor();
+    private static final RegionConstraintFunction CONSTRAINT_FUNCTION = new RegionConstraintFunction(OBJECT_MAPPER, MONITOR);
+    private static final Permission PERMISSION = Permission.Builder.newInstance().build();
+    private static final String REGION_KEY = "region";
+    private static final String EXPECTED_REGION = "eu";
+    private static final String ISSUER_KEY = "iss";
 
     @Test
     public void verifyPolicy_validRegion() {
