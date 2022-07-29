@@ -69,7 +69,7 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
     private Optional<String> getRegion(VerifiableCredential verifiableCredential) {
         try {
             var region = verifiableCredential.getCredentialSubject().get(REGION_KEY);
-            return region == null ? Optional.empty() : Optional.of((String) region);
+            return Optional.ofNullable((String) region);
         } catch (Exception e) {
             monitor.warning("Error getting region", e);
             return Optional.empty();
