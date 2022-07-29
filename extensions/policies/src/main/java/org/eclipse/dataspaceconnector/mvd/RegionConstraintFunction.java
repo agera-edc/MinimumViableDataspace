@@ -51,7 +51,7 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
 
     private List<String> getRegions(Map<String, Object> claims) {
         return claims.values()
-                .stream().flatMap(x -> getVerifiableCredential(x).stream())
+                .stream().flatMap(o -> getVerifiableCredential(o).stream())
                 .flatMap(vc -> getRegion(vc).stream()).collect(Collectors.toList());
     }
 

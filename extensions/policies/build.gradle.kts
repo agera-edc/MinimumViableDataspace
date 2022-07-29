@@ -27,7 +27,7 @@ dependencies {
     api("${edcGroup}:ids-spi:${edcVersion}")
     api("${edcGroup}:contract-spi:${edcVersion}")
     api("${edcGroup}:core-base:${edcVersion}")
-    implementation("${identityHubGroup}.identityhub:identity-hub-spi:${identityHubVersion}")
+    implementation("${identityHubGroup}:identity-hub-spi:${identityHubVersion}")
 
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")

@@ -36,7 +36,11 @@ class MockCredentialsVerifierTest {
     void verifyCredentials() {
         Result<Map<String, Object>> actual = verifier.verifyCredentials("http://dummy.site/foo?region=us&tier=GOLD", wrapper);
         assertThat(actual.succeeded()).isTrue();
-        assertThat(extractClaims(actual.getContent())).isEqualTo(Map.of("region", "us", "tier", "GOLD"));
+        assertThat(actual.getContent())
+                .extracting(c -> c.values().stream().findFirst().get())
+                .extracting(VERIFIABLE_CREDENTIAL_KEY)
+                .extracting(CREDENTIAL_SUBJECT_KEY)
+                .isEqualTo(Map.of("region", "us", "tier", "GOLD"));
     }
 
     @Test
