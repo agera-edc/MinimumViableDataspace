@@ -77,6 +77,20 @@ public class RegionConstraintFunctionTest {
         assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.GT, EXPECTED_REGION, PERMISSION, policyContext)).isFalse();
     }
 
+    @Test
+    public void verifyPolicy_NeqOperatorValidRegion() {
+        var claims = toMappedVerifiableCredentials(Map.of(REGION_KEY, "us"));
+        var policyContext = getPolicyContext(claims);
+        assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.NEQ, EXPECTED_REGION, PERMISSION, policyContext)).isTrue();
+    }
+
+    @Test
+    public void verifyPolicy_NeqOperatorInvalidRegion() {
+        var claims = toMappedVerifiableCredentials(Map.of(REGION_KEY, EXPECTED_REGION));
+        var policyContext = getPolicyContext(claims);
+        assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.NEQ, EXPECTED_REGION, PERMISSION, policyContext)).isFalse();
+    }
+
     private PolicyContext getPolicyContext(Map<String, Object> claims) {
         return new PolicyContextImpl(new ParticipantAgent(claims, Map.of()));
     }

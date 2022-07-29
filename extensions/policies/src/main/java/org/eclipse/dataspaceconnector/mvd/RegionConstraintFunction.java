@@ -45,6 +45,8 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
         switch (operator) {
             case EQ:
                 return regions.contains(rightValue);
+            case NEQ:
+                return !regions.contains(rightValue);
             default:
                 return false;
         }
