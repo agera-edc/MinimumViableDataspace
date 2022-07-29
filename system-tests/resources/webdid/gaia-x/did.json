@@ -6,11 +6,7 @@
 			"@base": "did:web:did-server:gaiax"
 		}
 	],
-	"service": [{
-		"id": "#identity-hub-url",
-		"type": "IdentityHub",
-		"serviceEndpoint": "http://dummy?region=eu"
-	}],
+	"service": [],
 	"verificationMethod": [{
 		"id": "#my-key-1",
 		"controller": "",
