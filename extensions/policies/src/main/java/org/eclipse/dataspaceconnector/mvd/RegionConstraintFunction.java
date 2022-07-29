@@ -62,7 +62,7 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
             var vcObject = (Map<String, Object>) object;
             var verifiableCredentialMap = vcObject.get(VERIFIABLE_CREDENTIAL_KEY);
             return Optional.of(objectMapper.convertValue(verifiableCredentialMap, VerifiableCredential.class));
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
             monitor.warning("Error getting verifiable credentials", e);
             return Optional.empty();
         }

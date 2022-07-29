@@ -15,6 +15,8 @@
 package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
+import org.eclipse.dataspaceconnector.spi.system.Inject;
+import org.eclipse.dataspaceconnector.spi.system.Provider;
 import org.eclipse.dataspaceconnector.spi.system.Provides;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
@@ -25,9 +27,11 @@ import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 @Provides(CredentialsVerifier.class)
 public class MockCredentialsVerifierExtension implements ServiceExtension {
 
-    @Override
-    public void initialize(ServiceExtensionContext context) {
-        var credentialsVerifier = new MockCredentialsVerifier(context.getMonitor());
-        context.registerService(CredentialsVerifier.class, credentialsVerifier);
+    @Inject
+    CredentialsVerifier credentialsVerifier;
+
+    @Provider(isDefault = true)
+    CredentialsVerifier createCredentialsVerifier(ServiceExtensionContext context) {
+        return new MockCredentialsVerifier(context.getMonitor());
     }
 }
