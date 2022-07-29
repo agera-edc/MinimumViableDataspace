@@ -48,10 +48,4 @@ class MockCredentialsVerifierTest {
         assertThatThrownBy(() -> verifier.verifyCredentials("malformed_url", wrapper))
                 .isInstanceOf(EdcException.class);
     }
-
-    private Map<String, Object> extractClaims(Map<String, Object> verifiableCredentials) {
-        var vcObject = (Map<String, Object>) verifiableCredentials.values().stream().findFirst().get();
-        var vc = (Map<String, Object>) vcObject.get(VERIFIABLE_CREDENTIAL_KEY);
-        return (Map<String, Object>) vc.get(CREDENTIAL_SUBJECT_KEY);
-    }
 }
