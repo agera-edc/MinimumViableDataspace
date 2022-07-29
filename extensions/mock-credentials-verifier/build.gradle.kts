@@ -11,7 +11,7 @@ val identityHubGroup: String by project
 val identityHubVersion: String by project
 
 dependencies {
-    implementation("${edcGroup}:identity-did-spi:${edcVersion}")
+    implementation("${identityHubGroup}:identity-did-spi:${identityHubVersion}")
 
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
