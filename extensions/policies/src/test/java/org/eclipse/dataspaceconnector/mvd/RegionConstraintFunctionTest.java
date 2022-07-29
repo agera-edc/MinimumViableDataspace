@@ -92,7 +92,7 @@ public class RegionConstraintFunctionTest {
     }
 
     private PolicyContext getPolicyContext(Map<String, Object> claims) {
-        return new PolicyContextImpl(new ParticipantAgent(claims, Map.of()));
+        return new PolicyContextImpl(new ParticipantAgent(claims, Map.of()), Map.of());
     }
 
     private Map<String, Object> toMappedVerifiableCredentials(Map<String, Object> regionClaims) {
