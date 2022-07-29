@@ -31,7 +31,7 @@ public class MockCredentialsVerifierExtension implements ServiceExtension {
     CredentialsVerifier credentialsVerifier;
 
     @Provider(isDefault = true)
-    CredentialsVerifier createCredentialsVerifier(ServiceExtensionContext context) {
+    public CredentialsVerifier createCredentialsVerifier(ServiceExtensionContext context) {
         return new MockCredentialsVerifier(context.getMonitor());
     }
 }
