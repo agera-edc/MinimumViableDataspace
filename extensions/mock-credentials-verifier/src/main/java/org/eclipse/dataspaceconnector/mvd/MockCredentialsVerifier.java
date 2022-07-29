@@ -55,7 +55,7 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
      */
     @Override
     public Result<Map<String, Object>> getVerifiedCredentials(DidDocument didDocument) {
-        monitor.debug("Starting (mock) credential verification from DID doc " + didDocument.getId());
+        monitor.debug("Starting (mock) credential verification from DID document " + didDocument.getId());
 
         var hubBaseUrlResult = getIdentityHubBaseUrl(didDocument);
         if (hubBaseUrlResult.failed()) {
