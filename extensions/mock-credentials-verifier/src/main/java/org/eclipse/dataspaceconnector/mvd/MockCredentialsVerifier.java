@@ -42,6 +42,17 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
         this.monitor = monitor;
     }
 
+    /**
+     * Returns claims parsed from the query string of the URL configured for the identity hub in the provided DID document.
+     * <p>
+     * The URL is not accessed, and URL parts other than the query string are unimportant.
+     * <p>
+     * For example, if the Identity Hub URL is {@code http://dummy.site/foo?region=us&tier=GOLD}, the verifier
+     * returns {@code Map.of("region", "us", "tier", "GOLD"}.
+     *
+     * @param didDocument the DID document containing the Identity Hub URL.
+     * @return claims as defined in query string parameters.
+     */
     @Override
     public Result<Map<String, Object>> getVerifiedCredentials(DidDocument didDocument) {
         monitor.debug("Starting (mock) credential verification from DID doc " + didDocument.getId());
