@@ -24,10 +24,10 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
 import static org.mockito.Mockito.mock;
 
 class MockCredentialsVerifierTest {
-    private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
     private static final String CREDENTIAL_SUBJECT_KEY = "credentialSubject";
     MockCredentialsVerifier verifier = new MockCredentialsVerifier(new ConsoleMonitor());
     PublicKeyWrapper wrapper = mock(PublicKeyWrapper.class);
@@ -38,7 +38,7 @@ class MockCredentialsVerifierTest {
         assertThat(actual.succeeded()).isTrue();
         assertThat(actual.getContent())
                 .extracting(c -> c.values().stream().findFirst().get())
-                .extracting(VERIFIABLE_CREDENTIAL_KEY)
+                .extracting(VERIFIABLE_CREDENTIALS_KEY)"
                 .extracting(CREDENTIAL_SUBJECT_KEY)
                 .isEqualTo(Map.of("region", "us", "tier", "GOLD"));
     }

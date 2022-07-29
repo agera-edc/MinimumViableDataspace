@@ -15,6 +15,7 @@
 package org.eclipse.dataspaceconnector.mvd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
@@ -27,8 +28,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
+
 public class RegionConstraintFunction implements AtomicConstraintFunction<Permission> {
-    private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
     private static final String REGION_KEY = "region";
     private final ObjectMapper objectMapper;
     private final Monitor monitor;
@@ -58,7 +60,7 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
     private Optional<VerifiableCredential> getVerifiableCredential(Object object) {
         try {
             var vcObject = (Map<String, Object>) object;
-            var verifiableCredentialMap = vcObject.get(VERIFIABLE_CREDENTIAL_KEY);
+            var verifiableCredentialMap = vcObject.get(VERIFIABLE_CREDENTIALS_KEY);
             return Optional.of(objectMapper.convertValue(verifiableCredentialMap, VerifiableCredential.class));
         } catch (Exception e) {
             monitor.warning("Error getting verifiable credentials", e);

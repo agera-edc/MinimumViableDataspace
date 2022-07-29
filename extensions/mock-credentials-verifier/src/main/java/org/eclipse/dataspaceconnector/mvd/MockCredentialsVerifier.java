@@ -30,13 +30,13 @@ import java.util.regex.Pattern;
 import static java.net.URLDecoder.decode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toMap;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
 
 /**
  * Mock credentials verifier that simply returns claims parsed from the URL configured for the identity hub.
  * It will be replaced soon by the IdentityHubCredentialsVerifier.
  */
 public class MockCredentialsVerifier implements CredentialsVerifier {
-    private static final String VERIFIABLE_CREDENTIAL_KEY = "vc";
     private static final String VERIFIABLE_CREDENTIAL_ID_KEY = "id";
     private static final String CREDENTIAL_SUBJECT_KEY = "credentialSubject";
     private static final String ISSUER_KEY = "iss";
@@ -83,7 +83,7 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
     private Map<String, Object> toMappedVerifiableCredentials(Map<String, Object> regionClaims) {
         var vcId = UUID.randomUUID().toString();
         return Map.of(vcId,
-                Map.of(VERIFIABLE_CREDENTIAL_KEY, Map.of(CREDENTIAL_SUBJECT_KEY, regionClaims,
+                Map.of(VERIFIABLE_CREDENTIALS_KEY, Map.of(CREDENTIAL_SUBJECT_KEY, regionClaims,
                                 VERIFIABLE_CREDENTIAL_ID_KEY, vcId),
                         // issuer will be ignored when applying policies for now.
                         ISSUER_KEY, String.join("did:web:", UUID.randomUUID().toString())));
