@@ -38,7 +38,7 @@ class MockCredentialsVerifierTest {
         assertThat(actual.succeeded()).isTrue();
         assertThat(actual.getContent())
                 .extracting(c -> c.values().stream().findFirst().get())
-                .extracting(VERIFIABLE_CREDENTIALS_KEY)"
+                .extracting(VERIFIABLE_CREDENTIALS_KEY)
                 .extracting(CREDENTIAL_SUBJECT_KEY)
                 .isEqualTo(Map.of("region", "us", "tier", "GOLD"));
     }
