@@ -24,6 +24,7 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyContext;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -89,6 +90,20 @@ public class RegionConstraintFunctionTest {
         var claims = toMappedVerifiableCredentials(Map.of(REGION_KEY, EXPECTED_REGION));
         var policyContext = getPolicyContext(claims);
         assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.NEQ, EXPECTED_REGION, PERMISSION, policyContext)).isFalse();
+    }
+
+    @Test
+    public void verifyPolicy_InOperatorValidRegion() {
+        var claims = toMappedVerifiableCredentials(Map.of(REGION_KEY, EXPECTED_REGION));
+        var policyContext = getPolicyContext(claims);
+        assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.IN, List.of(EXPECTED_REGION), PERMISSION, policyContext)).isTrue();
+    }
+
+    @Test
+    public void verifyPolicy_InOperatorInValidRegion() {
+        var claims = toMappedVerifiableCredentials(Map.of(REGION_KEY, "us"));
+        var policyContext = getPolicyContext(claims);
+        assertThat(CONSTRAINT_FUNCTION.evaluate(Operator.IN, List.of(EXPECTED_REGION), PERMISSION, policyContext)).isFalse();
     }
 
     private PolicyContext getPolicyContext(Map<String, Object> claims) {

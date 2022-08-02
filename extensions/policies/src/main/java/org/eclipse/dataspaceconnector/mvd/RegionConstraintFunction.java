@@ -22,6 +22,8 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.policy.AtomicConstraintFunction;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyContext;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +49,8 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
                 return regions.contains(rightValue);
             case NEQ:
                 return !regions.contains(rightValue);
+            case IN:
+                return !Collections.disjoint((Collection<?>) rightValue, regions);
             default:
                 return false;
         }
