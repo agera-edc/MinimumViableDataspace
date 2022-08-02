@@ -93,7 +93,8 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
     private Map<String, Object> toMappedVerifiableCredentials(Map<String, Object> regionClaims) {
         var vcId = UUID.randomUUID().toString();
         return Map.of(vcId,
-                Map.of(VERIFIABLE_CREDENTIALS_KEY, Map.of(CREDENTIAL_SUBJECT_KEY, regionClaims,
+                Map.of(VERIFIABLE_CREDENTIALS_KEY,
+                        Map.of(CREDENTIAL_SUBJECT_KEY, regionClaims,
                                 VERIFIABLE_CREDENTIAL_ID_KEY, vcId),
                         // issuer will be ignored when applying policies for now.
                         ISSUER_KEY, String.join("did:web:", UUID.randomUUID().toString())));
