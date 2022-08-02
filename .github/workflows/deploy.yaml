@@ -132,6 +132,7 @@ jobs:
     outputs:
       app_insights_connection_string: ${{ steps.runterraform.outputs.app_insights_connection_string }}
       registration_service_url: ${{ steps.runterraform.outputs.registration_service_url }}
+      dataspace_did_host: ${{ steps.runterraform.outputs.dataspace_did_host }}
 
     defaults:
       run:
@@ -420,14 +421,16 @@ jobs:
 
       - name: 'Register participant'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:0.0.1-SNAPSHOT:jar:all -DoutputDirectory=.
-          java -jar registration-service-cli-0.0.1-SNAPSHOT-all.jar \
-            -d did:web:$DID_HOST \
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:$REGISTRATION_SERVICE_VERSION:jar:all -DoutputDirectory=.
+          java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
+            -d did:web:$DATASPACE_DID_HOST \
+            -c did:web:$DID_HOST \
             -k participantkey.pem \
             participants add \
             --ids-url "http://${{ env.EDC_HOST }}:8282"
         env:
-          REGISTRATION_SERVICE_API_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}
+          REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
+          DATASPACE_DID_HOST: ${{ needs.Deploy-Dataspace.outputs.dataspace_did_host }}
 
   Verify:
     needs:
