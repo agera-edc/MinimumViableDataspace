@@ -50,6 +50,12 @@ class MockCredentialsVerifierTest {
                 .isInstanceOf(EdcException.class);
     }
 
+    @Test
+    void verifyCredentials_failsOnMissingIdentityHubUrl() {
+        var didDocument = DidDocument.Builder.newInstance().build();
+        assertThat(verifier.getVerifiedCredentials(didDocument).failed());
+    }
+
     private Result<Map<String, Object>> getVerifiedCredentials(String identityHubUrl) {
         var didDocument = DidDocument.Builder.newInstance()
                 .service(List.of(
