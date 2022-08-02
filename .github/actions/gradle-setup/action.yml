@@ -7,24 +7,24 @@ runs:
     - name: Checkout EDC
       uses: actions/checkout@v2
       with:
-        # Change after Registration Service PR is merged to upstream
-        repository: agera-edc/DataSpaceConnector
+        repository: eclipse-dataspaceconnector/DataSpaceConnector
         path: DataSpaceConnector
-        ref: 98e6df014f063c7d426fb1fd1a71b331a812b000
+        ref: v0.0.1-milestone-5
 
     - name: Checkout Registration Service
       uses: actions/checkout@v2
       with:
-        repository: eclipse-dataspaceconnector/RegistrationService
+        # Change after Registration Service PR is merged to upstream
+        repository: agera-edc/RegistrationService
         path: RegistrationService
-        ref: daa414856b42c8534e9123279112e33b366039b4
+        ref: 98e6df014f063c7d426fb1fd1a71b331a812b000
 
     - name: Checkout Identity Hub
       uses: actions/checkout@v2
       with:
         repository: eclipse-dataspaceconnector/IdentityHub
         path: IdentityHub
-        ref: bc13cf0cb8589b792eef733c7cf7b3422476add5
+        ref: 7c6908f9a7448dbc787e1afe505c49370f5f6671
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
