@@ -63,7 +63,7 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
                 var region = getRegion(vc);
                 regions.add(region);
             } catch (ClassCastException | IllegalArgumentException e) {
-                monitor.warning("Failed getting region from verifiableCredential", e);
+                monitor.debug("Failed getting region from verifiableCredential", e);
             }
         }
         return regions;
