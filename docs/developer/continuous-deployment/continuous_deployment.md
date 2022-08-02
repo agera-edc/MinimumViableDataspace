@@ -197,4 +197,4 @@ Your infrastructure is now set up to run deployments, you can now e.g. run the `
 
 ## Azure Location for MVD Deployments
 
-To change the location where MVD instances will be deployed to, you can optionally change the location in the [variables.tf file](../../../deployment/terraform/dataspace/variables.tf) for the dataspace authority and in the [variables.tf file](../../../deployment/terraform/participant/variables.tf).
+To change the location where MVD instances will be deployed to, you can optionally change the location in the [variables.tf file](../../../deployment/terraform/dataspace/variables.tf) for the dataspace authority and in the [variables.tf file](../../../deployment/terraform/participant/variables.tf) for dataspace participants.
