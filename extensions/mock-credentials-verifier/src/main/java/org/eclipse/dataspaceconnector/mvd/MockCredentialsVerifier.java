@@ -67,7 +67,7 @@ public class MockCredentialsVerifier implements CredentialsVerifier {
 
         var hubBaseUrlResult = getIdentityHubBaseUrl(didDocument);
         if (hubBaseUrlResult.failed()) {
-            monitor.debug("Failed to get Hub URL from document");
+            monitor.debug(String.join(",", hubBaseUrlResult.getFailureMessages()));
             return Result.failure(hubBaseUrlResult.getFailureMessages());
         }
         var hubBaseUrl = hubBaseUrlResult.getContent();
