@@ -405,10 +405,14 @@ jobs:
           
           id=$(uuidgen)
           
+          echo "*** issuer: $issuer"
+          echo "*** gaiaxDidHost: $gaiaxDidHost"
+          echo "*** outputs: ${{ needs.Deploy-Dataspace.outputs }}"
+          
           java -jar identity-hub-cli-$cli_version-all.jar -s=$identityHubUrl vc add \
             -c='{"id":"'$id'","credentialSubject":{"region":"'$region'"}}' \
             -b="did:web:$DID_HOST" \
-            -i="did:web:$issuer" \
+            -i="did:web:$gaiaxDidHost" \
             -k="gaiaxkey.pem"
           
           java -jar identity-hub-cli-$cli_version-all.jar -s=$identityHubUrl vc list
@@ -416,6 +420,7 @@ jobs:
           cli_version: 0.0.1-SNAPSHOT
           region: ${{ matrix.region }}
           issuer: ${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}
+          gaiaxDidHost: ${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}
           identityHubUrl: http://${{ env.EDC_HOST }}:8181/api/identity-hub
 
       - name: 'Register participant'
