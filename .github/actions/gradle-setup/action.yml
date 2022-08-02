@@ -7,9 +7,10 @@ runs:
     - name: Checkout EDC
       uses: actions/checkout@v2
       with:
-        repository: eclipse-dataspaceconnector/DataSpaceConnector
+        # Change after Registration Service PR is merged to upstream
+        repository: agera-edc/DataSpaceConnector
         path: DataSpaceConnector
-        ref: 3ff940b720f44826df28e893fb31344eb6faacef
+        ref: 98e6df014f063c7d426fb1fd1a71b331a812b000
 
     - name: Checkout Registration Service
       uses: actions/checkout@v2
