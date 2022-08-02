@@ -57,11 +57,10 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
 
     private List<String> getRegions(Map<String, Object> claims) {
         List<String> regions = new ArrayList<>();
-        var objects = claims.values();
-        for (Object o : objects) {
+        var verifiableCredentials = claims.values();
+        for (Object vc : verifiableCredentials) {
             try {
-                var verifiableCredential = getVerifiableCredential(o);
-                var region = getRegion(verifiableCredential);
+                var region = getRegion(vc);
                 regions.add(region);
             } catch (ClassCastException | IllegalArgumentException e) {
                 monitor.warning("Failed getting region from verifiableCredential", e);
@@ -70,14 +69,10 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
         return regions;
     }
 
-    private VerifiableCredential getVerifiableCredential(Object object) {
+    private String getRegion(Object object) {
         var vcObject = (Map<String, Object>) object;
         var verifiableCredentialMap = vcObject.get(VERIFIABLE_CREDENTIALS_KEY);
-        return objectMapper.convertValue(verifiableCredentialMap, VerifiableCredential.class);
-    }
-
-    private String getRegion(VerifiableCredential verifiableCredential) {
-        var region = verifiableCredential.getCredentialSubject().get(REGION_KEY);
-        return (String) region;
+        var verifiableCredential = objectMapper.convertValue(verifiableCredentialMap, VerifiableCredential.class);
+        return (String) (verifiableCredential.getCredentialSubject().get(REGION_KEY));
     }
 }
