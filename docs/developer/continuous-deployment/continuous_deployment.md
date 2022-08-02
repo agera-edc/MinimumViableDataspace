@@ -180,7 +180,7 @@ Configure the following GitHub secrets which are required by the CD pipeline:
 | `TERRAFORM_STATE_STORAGE_ACCOUNT` | The name of the storage account used to store the Terraform state container, e.g. *mvdterraformstates*. |
 | `TERRAFORM_STATE_CONTAINER` | The name of the container used to store the Terraform state blob, e.g. *mvdterraformstates*. |
 
-Update the value of the `CD_RESOURCES_PREFIX` env in the [cd.yaml](../../../.github/workflows/cloud-cd.yaml) file.
+Update the value of the `CD_RESOURCES_PREFIX` env in the [cloud-cd.yaml](../../../.github/workflows/cloud-cd.yaml) file.
 This prefix allows to have unique resource names across fork repositories when running CD workflows.
 
 See instructions under [Configure GitHub Secrets for GitHub Actions](#configure-github-secrets-for-github-actions) on how to configure GitHub secrets.
