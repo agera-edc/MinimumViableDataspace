@@ -14,7 +14,12 @@ for participant in "${PARTICIPANTS[@]}"; do
     did="did:web:did-server:$participantName"
 
     echo "Registering $participantName"
-    java -jar registration-service-cli.jar -d="$did" -k=/resources/vault/$participantName/private-key.pem -s='http://registration-service:8184/authority' participants add --ids-url "http://$participantName:8282"
+    java -jar registration-service-cli.jar \
+                -d="did:web:did-server:registration-service" \
+                -k=/resources/vault/$participantName/private-key.pem \
+                -c="$did" \
+                 participants add \
+                --ids-url "http://$participantName:8282"
 
     echo "Seeding VC for $participantName"
     vcId=$(uuidgen)
