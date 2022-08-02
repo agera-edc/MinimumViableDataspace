@@ -16,6 +16,7 @@ for participant in "${PARTICIPANTS[@]}"; do
     echo "Registering $participantName"
     java -jar registration-service-cli.jar \
                 -d="did:web:did-server:registration-service" \
+                --http-scheme \
                 -k=/resources/vault/$participantName/private-key.pem \
                 -c="$did" \
                  participants add \
