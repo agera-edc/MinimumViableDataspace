@@ -77,7 +77,7 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
         try {
             var region = verifiableCredential.getCredentialSubject().get(REGION_KEY);
             return Optional.ofNullable((String) region);
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
             monitor.warning("Error getting region", e);
             return Optional.empty();
         }
