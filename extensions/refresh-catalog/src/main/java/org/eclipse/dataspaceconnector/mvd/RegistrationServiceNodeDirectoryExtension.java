@@ -15,6 +15,9 @@
 package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
+import org.eclipse.dataspaceconnector.iam.did.resolution.DidResolverRegistryImpl;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolver;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolverRegistry;
 import org.eclipse.dataspaceconnector.registration.client.ApiClientFactory;
 import org.eclipse.dataspaceconnector.registration.client.api.RegistryApi;
 import org.eclipse.dataspaceconnector.spi.EdcSetting;
@@ -22,6 +25,7 @@ import org.eclipse.dataspaceconnector.spi.iam.IdentityService;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.Provider;
+import org.eclipse.dataspaceconnector.spi.system.Provides;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
@@ -44,6 +48,8 @@ public class RegistrationServiceNodeDirectoryExtension implements ServiceExtensi
     @Inject
     private IdentityService identityService;
 
+    private DidResolverRegistry didResolverRegistry;
+
     private String registrationServiceApiUrl;
 
     @Override
@@ -56,7 +62,14 @@ public class RegistrationServiceNodeDirectoryExtension implements ServiceExtensi
     public FederatedCacheNodeDirectory federatedCacheNodeDirectory() {
         var apiClient = ApiClientFactory.createApiClient(registrationServiceApiUrl, identityService::obtainClientCredentials);
         var registryApiClient = new RegistryApi(apiClient);
-        return new RegistrationServiceNodeDirectory(registryApiClient);
+        var resolver = new FederatedCacheNodeResolver(didResolverRegistry, monitor);
+        return new RegistrationServiceNodeDirectory(registryApiClient, resolver);
+    }
+
+    @Provider
+    public DidResolverRegistry didResolverRegistryImpl() {
+        didResolverRegistry = new DidResolverRegistryImpl();
+        return didResolverRegistry;
     }
 }
 

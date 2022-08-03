@@ -16,8 +16,14 @@ package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
+import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
+import org.eclipse.dataspaceconnector.iam.did.spi.document.Service;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolver;
 import org.eclipse.dataspaceconnector.registration.client.api.RegistryApi;
 import org.eclipse.dataspaceconnector.registration.client.models.Participant;
+import org.eclipse.dataspaceconnector.spi.EdcException;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,23 +34,21 @@ import java.util.stream.Collectors;
 public class RegistrationServiceNodeDirectory implements FederatedCacheNodeDirectory {
 
     private final RegistryApi apiClient;
+    private final FederatedCacheNodeResolver resolver;
 
     /**
      * Constructs {@link RegistrationServiceNodeDirectory}
-     *
-     * @param apiClient RegistrationService API client.
+     *  @param apiClient RegistrationService API client.
+     * @param resolver gets {@link FederatedCacheNode} from {@link Participant}
      */
-    public RegistrationServiceNodeDirectory(RegistryApi apiClient) {
+    public RegistrationServiceNodeDirectory(RegistryApi apiClient, FederatedCacheNodeResolver resolver) {
         this.apiClient = apiClient;
+        this.resolver = resolver;
     }
 
     @Override
     public List<FederatedCacheNode> getAll() {
-        return apiClient.listParticipants().stream().map(this::toFederatedCacheNode).collect(Collectors.toList());
-    }
-
-    private FederatedCacheNode toFederatedCacheNode(Participant participant) {
-        return new FederatedCacheNode(participant.getName(), participant.getUrl(), participant.getSupportedProtocols());
+        return apiClient.listParticipants().stream().map(resolver::toFederatedCacheNode).collect(Collectors.toList());
     }
 
     @Override
