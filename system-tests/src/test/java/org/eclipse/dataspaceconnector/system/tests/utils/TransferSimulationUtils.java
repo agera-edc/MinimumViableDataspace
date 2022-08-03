@@ -219,7 +219,7 @@ public abstract class TransferSimulationUtils {
     private static String loadContractAgreement(String providerUrl) {
         var policy = Policy.Builder.newInstance()
                 .permission(Permission.Builder.newInstance()
-                        .target("test-document_provider")
+                        .target(PROVIDER_ASSET_ID)
                         .action(Action.Builder.newInstance().type("USE").build())
                         .build())
                 .type(PolicyType.SET)
