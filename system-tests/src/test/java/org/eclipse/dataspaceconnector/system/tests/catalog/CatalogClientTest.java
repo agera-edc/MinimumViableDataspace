@@ -34,6 +34,8 @@ import static org.eclipse.dataspaceconnector.system.tests.utils.TestUtils.requir
 class CatalogClientTest {
     static final String CONSUMER_EU_CATALOG_URL = requiredPropOrEnv("CONSUMER_EU_CATALOG_URL", "http://localhost:8182/api/federatedcatalog");
     static final String CONSUMER_US_CATALOG_URL = requiredPropOrEnv("CONSUMER_US_CATALOG_URL", "http://localhost:8183/api/federatedcatalog");
+    static final String NON_RESTRICTED_ASSET_PREFIX = "test-document_";
+    static final String RESTRICTED_ASSET_PREFIX = "test-document-2_";
 
     static TypeManager typeManager = new TypeManager();
 
@@ -46,10 +48,10 @@ class CatalogClientTest {
     void containsOnlyNonRestrictedAsset() {
         await().atMost(2, MINUTES).untilAsserted(() -> {
             var nodes = getNodesFromCatalog(CONSUMER_US_CATALOG_URL);
-            assertThat(nodes).satisfiesExactly(
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"));
+            assertThat(nodes)
+                    .isNotEmpty()
+                    .allSatisfy(
+                        n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith(NON_RESTRICTED_ASSET_PREFIX));
         });
     }
 
@@ -57,13 +59,13 @@ class CatalogClientTest {
     void containsAllAssets() {
         await().atMost(2, MINUTES).untilAsserted(() -> {
             var nodes = getNodesFromCatalog(CONSUMER_EU_CATALOG_URL);
-            assertThat(nodes).satisfiesExactlyInAnyOrder(
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document-2_"),
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document-2_"),
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document-2_"));
+            assertThat(nodes)
+                    .isNotEmpty()
+                    .allSatisfy(
+                        n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString()
+                                .satisfiesAnyOf(
+                                        s -> assertThat(s).startsWith(NON_RESTRICTED_ASSET_PREFIX),
+                                        s -> assertThat(s).startsWith(RESTRICTED_ASSET_PREFIX)));
         });
     }
 
