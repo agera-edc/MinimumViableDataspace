@@ -425,8 +425,7 @@ jobs:
             -s $REGISTRATION_SERVICE_API_URL \
             -d did:web:$DID_HOST \
             -k participantkey.pem \
-            participants add \
-            --ids-url "http://${{ env.EDC_HOST }}:8282"
+            participants add
         env:
           REGISTRATION_SERVICE_API_URL: ${{ needs.Deploy-Dataspace.outputs.registration_service_url }}
 
