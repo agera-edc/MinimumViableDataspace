@@ -30,8 +30,6 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.eclipse.dataspaceconnector.system.tests.utils.TestUtils.requiredPropOrEnv;
-import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.EU_RESTRICTED_PROVIDER_ASSET_ID;
-import static org.eclipse.dataspaceconnector.system.tests.utils.TransferSimulationUtils.PROVIDER_ASSET_ID;
 
 class CatalogClientTest {
     static final String CONSUMER_EU_CATALOG_URL = requiredPropOrEnv("CONSUMER_EU_CATALOG_URL", "http://localhost:8182/api/federatedcatalog");
@@ -49,7 +47,9 @@ class CatalogClientTest {
         await().atMost(2, MINUTES).untilAsserted(() -> {
             var nodes = getNodesFromCatalog(CONSUMER_US_CATALOG_URL);
             assertThat(nodes).satisfiesExactly(
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID));
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"));
         });
     }
 
@@ -58,8 +58,12 @@ class CatalogClientTest {
         await().atMost(2, MINUTES).untilAsserted(() -> {
             var nodes = getNodesFromCatalog(CONSUMER_EU_CATALOG_URL);
             assertThat(nodes).satisfiesExactlyInAnyOrder(
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(PROVIDER_ASSET_ID),
-                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).isEqualTo(EU_RESTRICTED_PROVIDER_ASSET_ID));
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document_"),
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document-2_"),
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document-2_"),
+                    n -> assertThat(n.getAsset().getProperty(Asset.PROPERTY_ID)).asString().startsWith("test-document-2_"));
         });
     }
 
