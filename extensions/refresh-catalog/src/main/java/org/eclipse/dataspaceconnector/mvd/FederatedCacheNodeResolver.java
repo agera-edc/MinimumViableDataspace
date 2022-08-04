@@ -25,9 +25,13 @@ import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.util.List;
 
+/**
+ * Resolves the FederatedCacheNode from the Participant's did document.
+ */
 public class FederatedCacheNodeResolver {
 
     public static final String IDS_URL = "IdsUrl";
+
     private final DidResolverRegistry resolver;
     private final Monitor monitor;
 
