@@ -67,11 +67,6 @@ class FederatedCacheNodeResolverTest {
         assertThatThrownBy(() -> resolver.toFederatedCacheNode(new Participant().did(did))).isInstanceOf(EdcException.class);
     }
 
-    @NotNull
-    private DidDocument getDidDocument(List<Service> services) {
-        return DidDocument.Builder.newInstance().id(did).service(services).build();
-    }
-
     @Test
     void getNode_noIdsUrl() {
         when(didResolver.resolve(did)).thenReturn(Result.success(getDidDocument(List.of())));
@@ -79,6 +74,11 @@ class FederatedCacheNodeResolverTest {
         resolver =  new FederatedCacheNodeResolver(didResolver, new ConsoleMonitor());
 
         assertThatThrownBy(() -> resolver.toFederatedCacheNode(new Participant().did(did))).isInstanceOf(EdcException.class);
+    }
+
+    @NotNull
+    private DidDocument getDidDocument(List<Service> services) {
+        return DidDocument.Builder.newInstance().id(did).service(services).build();
     }
 
     private static Stream<Arguments> propertiesSource() {
