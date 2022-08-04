@@ -15,7 +15,6 @@
 package org.eclipse.dataspaceconnector.mvd;
 
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
-import org.eclipse.dataspaceconnector.iam.did.resolution.DidResolverRegistryImpl;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolverRegistry;
 import org.eclipse.dataspaceconnector.registration.client.ApiClientFactory;
 import org.eclipse.dataspaceconnector.registration.client.api.RegistryApi;
@@ -46,6 +45,7 @@ public class RegistrationServiceNodeDirectoryExtension implements ServiceExtensi
     @Inject
     private IdentityService identityService;
 
+    @Inject
     private DidResolverRegistry didResolverRegistry;
 
     private String registrationServiceApiUrl;
@@ -62,12 +62,6 @@ public class RegistrationServiceNodeDirectoryExtension implements ServiceExtensi
         var registryApiClient = new RegistryApi(apiClient);
         var resolver = new FederatedCacheNodeResolver(didResolverRegistry, monitor);
         return new RegistrationServiceNodeDirectory(registryApiClient, resolver);
-    }
-
-    @Provider
-    public DidResolverRegistry didResolverRegistryImpl() {
-        didResolverRegistry = new DidResolverRegistryImpl();
-        return didResolverRegistry;
     }
 }
 
