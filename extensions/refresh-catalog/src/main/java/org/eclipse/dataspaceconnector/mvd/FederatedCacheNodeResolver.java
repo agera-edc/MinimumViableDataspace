@@ -46,12 +46,15 @@ public class FederatedCacheNodeResolver {
             monitor.severe(String.join(" | ", didDocument.getFailure().getMessages()));
             throw new EdcException("Can't resolve did document for participant: " + participant.getDid());
         }
-        String url = getUrl(didDocument);
-        return new FederatedCacheNode(didDocument.getContent().getId(), url, List.of("ids-multipart"));
+        return new FederatedCacheNode(didDocument.getContent().getId(), getUrl(didDocument), List.of("ids-multipart"));
     }
 
     private String getUrl(Result<DidDocument> didDocument) {
         return didDocument.getContent()
-                .getService().stream().filter(service -> service.getType().equals(IDS_URL)).map(Service::getServiceEndpoint).findFirst().orElseThrow(() -> new EdcException("Ids url not present in the participants did document."));
+                .getService().stream()
+                .filter(service -> service.getType().equals(IDS_URL))
+                .map(Service::getServiceEndpoint)
+                .findFirst()
+                .orElseThrow(() -> new EdcException("Ids url not present in the participants did document."));
     }
 }
