@@ -22,5 +22,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
     testImplementation("com.github.javafaker:javafaker:${faker}")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:${jupiterVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
 }
