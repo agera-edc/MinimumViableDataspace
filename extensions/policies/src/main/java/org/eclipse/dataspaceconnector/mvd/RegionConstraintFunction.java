@@ -22,10 +22,11 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.policy.AtomicConstraintFunction;
 import org.eclipse.dataspaceconnector.spi.policy.PolicyContext;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
 
@@ -47,35 +48,31 @@ public class RegionConstraintFunction implements AtomicConstraintFunction<Permis
                 return regions.contains(rightValue);
             case NEQ:
                 return !regions.contains(rightValue);
+            case IN:
+                return !Collections.disjoint((Collection<?>) rightValue, regions);
             default:
                 return false;
         }
     }
 
     private List<String> getRegions(Map<String, Object> claims) {
-        return claims.values()
-                .stream().flatMap(o -> getVerifiableCredential(o).stream())
-                .flatMap(vc -> getRegion(vc).stream()).collect(Collectors.toList());
+        List<String> regions = new ArrayList<>();
+        var verifiableCredentials = claims.values();
+        for (Object vc : verifiableCredentials) {
+            try {
+                var region = getRegion(vc);
+                regions.add(region);
+            } catch (ClassCastException | IllegalArgumentException e) {
+                monitor.warning("Failed getting region from verifiableCredential", e);
+            }
+        }
+        return regions;
     }
 
-    private Optional<VerifiableCredential> getVerifiableCredential(Object object) {
-        try {
-            var vcObject = (Map<String, Object>) object;
-            var verifiableCredentialMap = vcObject.get(VERIFIABLE_CREDENTIALS_KEY);
-            return Optional.of(objectMapper.convertValue(verifiableCredentialMap, VerifiableCredential.class));
-        } catch (ClassCastException e) {
-            monitor.warning("Error getting verifiable credentials", e);
-            return Optional.empty();
-        }
-    }
-
-    private Optional<String> getRegion(VerifiableCredential verifiableCredential) {
-        try {
-            var region = verifiableCredential.getCredentialSubject().get(REGION_KEY);
-            return Optional.ofNullable((String) region);
-        } catch (Exception e) {
-            monitor.warning("Error getting region", e);
-            return Optional.empty();
-        }
+    private String getRegion(Object object) {
+        var vcObject = (Map<String, Object>) object;
+        var verifiableCredentialMap = vcObject.get(VERIFIABLE_CREDENTIALS_KEY);
+        var verifiableCredential = objectMapper.convertValue(verifiableCredentialMap, VerifiableCredential.class);
+        return (String) (verifiableCredential.getCredentialSubject().get(REGION_KEY));
     }
 }
