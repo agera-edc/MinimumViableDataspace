@@ -10,7 +10,11 @@
 		"id": "#identity-hub-url",
 		"type": "IdentityHub",
 		"serviceEndpoint": "http://dummy?region=eu"
-	}],
+	},{
+      "id": "#ids-url",
+      "type": "IdsUrl",
+      "serviceEndpoint": "http://consumer-eu:8282"
+    }],
 	"verificationMethod": [{
 		"id": "#my-key-1",
 		"controller": "",
