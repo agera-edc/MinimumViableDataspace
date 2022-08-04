@@ -48,7 +48,6 @@ public class IdentityHubIntegrationTest {
             .readTimeout(1, TimeUnit.MINUTES)
             .build();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final ConsoleMonitor CONSOLE_MONITOR = new ConsoleMonitor();
 
     private static final Monitor MONITOR = new ConsoleMonitor();
 
