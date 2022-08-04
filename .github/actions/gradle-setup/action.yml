@@ -17,7 +17,7 @@ runs:
         # Change after Registration Service PR is merged to upstream
         repository: agera-edc/RegistrationService
         path: RegistrationService
-        ref: 98e6df014f063c7d426fb1fd1a71b331a812b000
+        ref: 4ffe802d08413c0f30ce65995d638ddea29eb1c3
 
     - name: Checkout Identity Hub
       uses: actions/checkout@v2
