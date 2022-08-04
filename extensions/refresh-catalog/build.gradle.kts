@@ -14,8 +14,8 @@ val faker: String by project
 dependencies {
     implementation("${edcGroup}:common-util:${edcVersion}")
     implementation("${edcGroup}:federated-catalog-spi:${edcVersion}")
-    implementation("${edcGroup}:identity-did-web:${edcVersion}")
     implementation("${edcGroup}:identity-did-core:${edcVersion}")
+    implementation("${edcGroup}:identity-did-web:${edcVersion}")
     implementation("${registrationServiceGroup}:registration-service-client:${registrationServiceVersion}")
 
     testImplementation("org.assertj:assertj-core:${assertj}")

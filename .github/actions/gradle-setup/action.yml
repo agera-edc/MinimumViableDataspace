@@ -15,9 +15,9 @@ runs:
       uses: actions/checkout@v2
       with:
         # Change after Registration Service PR is merged to upstream
-        repository: agera-edc/RegistrationService
+        repository: eclipse-dataspaceconnector/RegistrationService
         path: RegistrationService
-        ref: 4ffe802d08413c0f30ce65995d638ddea29eb1c3
+        ref: daa414856b42c8534e9123279112e33b366039b4
 
     - name: Checkout Identity Hub
       uses: actions/checkout@v2
