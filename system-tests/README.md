@@ -1,6 +1,6 @@
 # System tests
 
-The system tests copies a file from a provider(company1) to a consumer(company2) blob storage account.
+The system tests copies a file from a provider (`company1`) to a consumer (`company2`) blob storage account.
 
 ## Publish/Build Tasks
 
