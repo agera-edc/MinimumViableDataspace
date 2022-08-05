@@ -62,9 +62,9 @@ public class IdentityHubIntegrationTest {
     @ParameterizedTest
     @MethodSource("provideHubUrls")
     void retrieveVerifiableCredentials(String hubUrl, String region) {
-        await().atMost(20, SECONDS).untilAsserted(() -> twoVCsInIdentityHub(hubUrl));
+        await().atMost(20, SECONDS).untilAsserted(() -> twoCredentialsInIdentityHub(hubUrl));
 
-        twoVCsInIdentityHub(hubUrl)
+        twoCredentialsInIdentityHub(hubUrl)
                 .anySatisfy(vcRequirements("region", region))
                 .anySatisfy(vcRequirements("gaiaXMember", "true"));
     }
@@ -91,7 +91,7 @@ public class IdentityHubIntegrationTest {
         };
     }
 
-    private AbstractCollectionAssert<?, Collection<? extends SignedJWT>, SignedJWT, ObjectAssert<SignedJWT>> twoVCsInIdentityHub(String hubUrl) {
+    private AbstractCollectionAssert<?, Collection<? extends SignedJWT>, SignedJWT, ObjectAssert<SignedJWT>> twoCredentialsInIdentityHub(String hubUrl) {
         var vcs = client.getVerifiableCredentials(hubUrl);
 
         assertThat(vcs.succeeded()).isTrue();
