@@ -20,6 +20,7 @@ import com.nimbusds.jwt.SignedJWT;
 import okhttp3.OkHttpClient;
 import org.assertj.core.api.AbstractCollectionAssert;
 import org.assertj.core.api.ObjectAssert;
+import org.assertj.core.api.ThrowingConsumer;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
 import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,28 +65,30 @@ public class IdentityHubIntegrationTest {
         await().atMost(20, SECONDS).untilAsserted(() -> twoVCsInIdentityHub(hubUrl));
 
         twoVCsInIdentityHub(hubUrl)
-                .anySatisfy(jwt -> {
-                    var claims = jwt.getJWTClaimsSet();
-                    assertThat(claims.getIssuer()).as("Issuer is a Web DID").startsWith("did:web:");
-                    assertThat(claims.getSubject()).as("Subject is a Web DID").startsWith("did:web:");
-                    assertThat(claims.getClaim("vc")).as("VC")
-                            .isInstanceOfSatisfying(JSONObject.class, t -> {
+                .anySatisfy(vcRequirements("region", region))
+                .anySatisfy(vcRequirements("gaiaXMember", "true"));
+    }
 
-                                assertThat(t.get("id"))
-                                        .as("VC ID")
-                                        .isInstanceOfSatisfying(String.class, s -> assertThat(s).isNotBlank());
+    private ThrowingConsumer<SignedJWT> vcRequirements(String name, String value) {
+        return jwt -> {
+            var claims = jwt.getJWTClaimsSet();
+            assertThat(claims.getIssuer()).as("Issuer is a Web DID").startsWith("did:web:");
+            assertThat(claims.getSubject()).as("Subject is a Web DID").startsWith("did:web:");
+            assertThat(claims.getClaim("vc")).as("VC")
+                    .isInstanceOfSatisfying(JSONObject.class, t -> {
 
-                                assertThat(t.get("credentialSubject"))
-                                        .as("VC credentialSubject")
-                                        .isInstanceOfSatisfying(JSONObject.class,
-                                                s -> assertThat(s.get("region"))
-                                                        .as("region")
-                                                        .isInstanceOfSatisfying(String.class,
-                                                                r -> assertThat(r).isEqualTo(region)));
+                        assertThat(t.get("id"))
+                                .as("VC ID")
+                                .isInstanceOfSatisfying(String.class, s -> assertThat(s).isNotBlank());
 
-                            })
-                    ;
-                });
+                        assertThat(t.get("credentialSubject"))
+                                .as("VC credentialSubject")
+                                .isInstanceOfSatisfying(JSONObject.class, s -> assertThat(s.get(name))
+                                        .as(name)
+                                        .isInstanceOfSatisfying(String.class,
+                                                r -> assertThat(r).isEqualTo(value)));
+                    });
+        };
     }
 
     private AbstractCollectionAssert<?, Collection<? extends SignedJWT>, SignedJWT, ObjectAssert<SignedJWT>> twoVCsInIdentityHub(String hubUrl) {
