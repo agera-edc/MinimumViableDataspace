@@ -268,6 +268,7 @@ jobs:
         working-directory: deployment/terraform/participant
     env:
       IDENTITY_HUB_VERSION: 0.0.1-SNAPSHOT
+      GAIAX_DID: did:web:${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}
 
     steps:
       - uses: actions/checkout@v2
@@ -408,17 +409,25 @@ jobs:
       - name: 'Set Identity Hub URL'
         run: echo "IDENTITY_HUB_URL=http://$EDC_HOST:8181/api/identity-hub" >> $GITHUB_ENV
 
+      - name: 'Push GAIA-X membership verifiable credential'
+        run: |
+          id=$(uuidgen)
+          java -jar identity-hub-cli-$IDENTITY_HUB_VERSION-all.jar -s=$IDENTITY_HUB_URL vc add \
+            -c='{"id": "'$id'", "credentialSubject": {"gaiaXMember": "true"}}' \
+            -b="did:web:$DID_HOST" \
+            -i="$GAIAX_DID" \
+            -k="gaiaxkey.pem"
+
       - name: 'Push region verifiable credential'
         run: |
           id=$(uuidgen)
           java -jar identity-hub-cli-$IDENTITY_HUB_VERSION-all.jar -s=$IDENTITY_HUB_URL vc add \
-            -c='{"id":"'$id'","credentialSubject":{"region":"'$region'"}}' \
+            -c='{"id": "'$id'", "credentialSubject": {"region": "'$region'"}}' \
             -b="did:web:$DID_HOST" \
-            -i="did:web:$issuer" \
+            -i="$GAIAX_DID" \
             -k="gaiaxkey.pem"
         env:
           region: ${{ matrix.region }}
-          issuer: ${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}
 
       - name: 'Output verifiable credentials'
         run: java -jar identity-hub-cli-$IDENTITY_HUB_VERSION-all.jar -s=$IDENTITY_HUB_URL vc list
