@@ -402,23 +402,26 @@ jobs:
           name: gaiaxkey
           path: deployment/terraform/participant
 
+      - name: 'Download Identity Hub CLI'
+        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:$IDENTITY_HUB_VERSION:jar:all -DoutputDirectory=.
+
+      - name: 'Set Identity Hub URL'
+        run: echo "IDENTITY_HUB_URL=http://$EDC_HOST:8181/api/identity-hub" >> $GITHUB_ENV
+
       - name: 'Push region verifiable credential'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:$IDENTITY_HUB_VERSION:jar:all -DoutputDirectory=.
-          
           id=$(uuidgen)
-          
-          java -jar identity-hub-cli-$IDENTITY_HUB_VERSION-all.jar -s=$identityHubUrl vc add \
+          java -jar identity-hub-cli-$IDENTITY_HUB_VERSION-all.jar -s=$IDENTITY_HUB_URL vc add \
             -c='{"id":"'$id'","credentialSubject":{"region":"'$region'"}}' \
             -b="did:web:$DID_HOST" \
             -i="did:web:$issuer" \
             -k="gaiaxkey.pem"
-          
-          java -jar identity-hub-cli-$IDENTITY_HUB_VERSION-all.jar -s=$identityHubUrl vc list
         env:
           region: ${{ matrix.region }}
           issuer: ${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}
-          identityHubUrl: http://${{ env.EDC_HOST }}:8181/api/identity-hub
+
+      - name: 'Output verifiable credentials'
+        run: java -jar identity-hub-cli-$IDENTITY_HUB_VERSION-all.jar -s=$IDENTITY_HUB_URL vc list
 
       - name: 'Register participant'
         run: |
