@@ -28,7 +28,7 @@ jobs:
 
       - name: 'Copy Registration Service CLI'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:$REGISTRATION_SERVICE_VERSION:jar:all -DoutputDirectory=.
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:$REGISTRATION_SERVICE_VERSION:jar:all -DoutputDirectory=.
           mv registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar registration-service-cli.jar
         working-directory: system-tests/resources/cli-tools
         env:
@@ -36,7 +36,7 @@ jobs:
 
       - name: 'Copy Identity Hub CLI'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:$IDENTITY_HUB_VERSION:jar:all -DoutputDirectory=.
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:$IDENTITY_HUB_VERSION:jar:all -DoutputDirectory=.
           mv identity-hub-cli-$IDENTITY_HUB_VERSION-all.jar identity-hub-cli.jar
         working-directory: system-tests/resources/cli-tools
         env:

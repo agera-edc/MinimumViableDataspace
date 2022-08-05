@@ -268,6 +268,7 @@ jobs:
         working-directory: deployment/terraform/participant
     env:
       IDENTITY_HUB_VERSION: 0.0.1-SNAPSHOT
+      REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
       GAIAX_DID: did:web:${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}
 
     steps:
@@ -434,8 +435,8 @@ jobs:
 
       - name: 'Register participant'
         run: |
-          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:0.0.1-SNAPSHOT:jar:all -DoutputDirectory=.
-          java -jar registration-service-cli-0.0.1-SNAPSHOT-all.jar \
+          mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:$REGISTRATION_SERVICE_VERSION:jar:all -DoutputDirectory=.
+          java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
             -s $REGISTRATION_SERVICE_API_URL \
             -d did:web:$DID_HOST \
             -k participantkey.pem \
