@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jwt.SignedJWT;
 import okhttp3.OkHttpClient;
+import org.assertj.core.api.AbstractCollectionAssert;
 import org.assertj.core.api.ObjectAssert;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
 import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
@@ -26,6 +27,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -62,7 +64,7 @@ public class IdentityHubIntegrationTest {
         await().atMost(20, SECONDS).untilAsserted(() -> singleVcInIdentityHub(hubUrl));
 
         singleVcInIdentityHub(hubUrl)
-                .satisfies(jwt -> {
+                .anySatisfy(jwt -> {
                     var claims = jwt.getJWTClaimsSet();
                     assertThat(claims.getIssuer()).as("Issuer is a Web DID").startsWith("did:web:");
                     assertThat(claims.getSubject()).as("Subject is a Web DID").startsWith("did:web:");
@@ -86,11 +88,11 @@ public class IdentityHubIntegrationTest {
                 });
     }
 
-    private ObjectAssert<SignedJWT> singleVcInIdentityHub(String hubUrl) {
+    private AbstractCollectionAssert<?, Collection<? extends SignedJWT>, SignedJWT, ObjectAssert<SignedJWT>> singleVcInIdentityHub(String hubUrl) {
         var vcs = client.getVerifiableCredentials(hubUrl);
 
         assertThat(vcs.succeeded()).isTrue();
-        return assertThat(vcs.getContent()).singleElement();
+        return assertThat(vcs.getContent()).hasSize(2);
     }
 
     private static Stream<Arguments> provideHubUrls() {
