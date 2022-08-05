@@ -408,6 +408,7 @@ jobs:
         uses: ./.github/actions/copy-maven-artifact
         with:
           artifact: org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:${{ env.IDENTITY_HUB_VERSION }}:jar:all
+          directory: deployment/terraform/participant
 
       - name: 'Set Identity Hub URL'
         run: echo "IDENTITY_HUB_URL=http://$EDC_HOST:8181/api/identity-hub" >> $GITHUB_ENV
@@ -439,6 +440,7 @@ jobs:
         uses: ./.github/actions/copy-maven-artifact
         with:
           artifact: org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:${{ env.REGISTRATION_SERVICE_VERSION }}:jar:all
+          directory: deployment/terraform/participant
 
       - name: 'Register participant'
         run: |
