@@ -19,18 +19,20 @@ import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.Service;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolverRegistry;
 import org.eclipse.dataspaceconnector.registration.client.models.Participant;
-import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.util.List;
+import java.util.Optional;
+
+import static java.lang.String.format;
 
 /**
  * Resolves the FederatedCacheNode from the Participant's did document.
  */
 public class FederatedCacheNodeResolver {
 
-    public static final String IDS_URL = "IdsUrl";
+    public static final String IDS_MESSAGING = "IDSMessaging";
 
     private final DidResolverRegistry resolver;
     private final Monitor monitor;
@@ -40,21 +42,23 @@ public class FederatedCacheNodeResolver {
         this.monitor = monitor;
     }
 
-    public FederatedCacheNode toFederatedCacheNode(Participant participant) {
-        Result<DidDocument> didDocument = resolver.resolve(participant.getDid());
+    public Result<FederatedCacheNode> toFederatedCacheNode(Participant participant) {
+        String did = participant.getDid();
+        Result<DidDocument> didDocument = resolver.resolve(did);
         if (didDocument.failed()) {
-            monitor.severe(String.join(" | ", didDocument.getFailure().getMessages()));
-            throw new EdcException("Can't resolve did document for participant: " + participant.getDid());
+            monitor.severe(format("Failed to resolve DID document for %s. %s", did, didDocument.getFailureDetail()));
+            return Result.failure("Can't resolve did document for participant: " + did);
         }
-        return new FederatedCacheNode(didDocument.getContent().getId(), getUrl(didDocument), List.of("ids-multipart"));
+        return getUrl(didDocument)
+                .map(url -> Result.success(new FederatedCacheNode(didDocument.getContent().getId(), url, List.of("ids-multipart"))))
+                .orElseGet(() -> Result.failure(format("Can't resolve did document for participant: %s", did)));
     }
 
-    private String getUrl(Result<DidDocument> didDocument) {
+    private Optional<String> getUrl(Result<DidDocument> didDocument) {
         return didDocument.getContent()
                 .getService().stream()
-                .filter(service -> service.getType().equals(IDS_URL))
+                .filter(service -> service.getType().equals(IDS_MESSAGING))
                 .map(Service::getServiceEndpoint)
-                .findFirst()
-                .orElseThrow(() -> new EdcException("Ids url not present in the participants did document."));
+                .findFirst();
     }
 }

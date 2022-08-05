@@ -18,6 +18,7 @@ import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNodeDirectory;
 import org.eclipse.dataspaceconnector.registration.client.api.RegistryApi;
 import org.eclipse.dataspaceconnector.registration.client.models.Participant;
+import org.eclipse.dataspaceconnector.spi.result.AbstractResult;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +44,11 @@ public class RegistrationServiceNodeDirectory implements FederatedCacheNodeDirec
 
     @Override
     public List<FederatedCacheNode> getAll() {
-        return apiClient.listParticipants().stream().map(resolver::toFederatedCacheNode).collect(Collectors.toList());
+        return apiClient.listParticipants().stream()
+                .map(resolver::toFederatedCacheNode)
+                .filter(AbstractResult::succeeded)
+                .map(AbstractResult::getContent)
+                .collect(Collectors.toList());
     }
 
     @Override

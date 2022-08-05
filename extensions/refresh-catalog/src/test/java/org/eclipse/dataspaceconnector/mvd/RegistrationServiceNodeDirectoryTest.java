@@ -18,21 +18,22 @@ import com.github.javafaker.Faker;
 import org.eclipse.dataspaceconnector.catalog.spi.FederatedCacheNode;
 import org.eclipse.dataspaceconnector.registration.client.api.RegistryApi;
 import org.eclipse.dataspaceconnector.registration.client.models.Participant;
+import org.eclipse.dataspaceconnector.spi.result.Result;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class RegistrationServiceNodeDirectoryTest {
 
     static Faker faker = new Faker();
 
-    private final RegistryApi registryApi = Mockito.mock(RegistryApi.class);
-    private final FederatedCacheNodeResolver resolver = Mockito.mock(FederatedCacheNodeResolver.class);
+    private final RegistryApi registryApi = mock(RegistryApi.class);
+    private final FederatedCacheNodeResolver resolver = mock(FederatedCacheNodeResolver.class);
 
     @Test
     void getAll_emptyList() {
@@ -40,7 +41,7 @@ class RegistrationServiceNodeDirectoryTest {
 
         when(registryApi.listParticipants()).thenReturn(List.of());
 
-        List<FederatedCacheNode> cacheNodes = service.getAll();
+        var cacheNodes = service.getAll();
         assertThat(cacheNodes).isEmpty();
     }
 
@@ -50,16 +51,33 @@ class RegistrationServiceNodeDirectoryTest {
 
         var company1 = getParticipant();
         var company2 = getParticipant();
-        FederatedCacheNode node1 = node();
-        FederatedCacheNode node2 = node();
+        var node1 = node();
+        var node2 = node();
         when(registryApi.listParticipants()).thenReturn(List.of(company1, company2));
-        when(resolver.toFederatedCacheNode(company1)).thenReturn(node1);
-        when(resolver.toFederatedCacheNode(company2)).thenReturn(node2);
+        when(resolver.toFederatedCacheNode(company1)).thenReturn(Result.success(node1));
+        when(resolver.toFederatedCacheNode(company2)).thenReturn(Result.success(node2));
 
         List<FederatedCacheNode> cacheNodes = service.getAll();
         assertThat(cacheNodes)
                 .usingRecursiveFieldByFieldElementComparator()
                 .containsExactly(node1, node2);
+    }
+
+    @Test
+    void getAll_failureResolvingDid() {
+        var service = new RegistrationServiceNodeDirectory(registryApi, resolver);
+
+        var company1 = getParticipant();
+        var company2 = getParticipant();
+        var node1 = node();
+        when(registryApi.listParticipants()).thenReturn(List.of(company1, company2));
+        when(resolver.toFederatedCacheNode(company1)).thenReturn(Result.success(node1));
+        when(resolver.toFederatedCacheNode(company2)).thenReturn(Result.failure("failure"));
+
+        List<FederatedCacheNode> cacheNodes = service.getAll();
+        assertThat(cacheNodes)
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactly(node1);
     }
 
     private FederatedCacheNode node() {
@@ -69,7 +87,7 @@ class RegistrationServiceNodeDirectoryTest {
     @NotNull
     private Participant getParticipant() {
         var participant = new Participant();
-        participant.setDid(faker.internet().domainName());
+        participant.setDid(String.format("did:web:%s", faker.internet().domainName()));
         return participant;
     }
 }

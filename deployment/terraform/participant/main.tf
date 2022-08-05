@@ -276,7 +276,7 @@ resource "azurerm_storage_blob" "did" {
       },
       {
         "id" : "#ids-url",
-        "type" : "IdsUrl",
+        "type" : "IDSMessaging",
         "serviceEndpoint" : "http://${urlencode(azurerm_container_group.edc.fqdn)}:${local.edc_ids_port}"
       }
     ],
