@@ -36,11 +36,11 @@ As part of dataspace onboarding, the Registration Service generates the followin
 
 ### GAIA-X Private key
 
-The GAIA-X authority private key is available to repository committers as a downloadable artifact in the GitHub workflow run.
+The GAIA-X authority private key is available to repository committers as a downloadable artifact in the GitHub workflow run. This is done for presentation/development purposes.
 
 ![Private Key artifact](key-artifact.png)
 
-This allows users to publish additional verifiable credentials into their deployments, using the [Identity Hub CLI](https://github.com/eclipse-dataspaceconnector/IdentityHub/tree/main/client-cli).
+This allows users who extend MVD with additional policies to publish additional verifiable credentials into their deployments, using the [Identity Hub CLI](https://github.com/eclipse-dataspaceconnector/IdentityHub/tree/main/client-cli).
 
 ## Rationale
 
