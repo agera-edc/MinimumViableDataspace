@@ -36,14 +36,14 @@ import static org.mockito.Mockito.when;
 
 class FederatedCacheNodeResolverTest {
 
-    public static final String IDS_MESSAGING = "IDSMessaging";
-
-    FederatedCacheNodeResolver resolver;
-    DidResolverRegistry didResolver = mock(DidResolverRegistry.class);
+    static final String IDS_MESSAGING = "IDSMessaging";
     static final Faker FAKER =  Faker.instance();
     static String did = "did:web:" + FAKER.internet().domainName();
     static String idsUrl = FAKER.internet().url();
-    private Monitor monitor = mock(Monitor.class);
+
+    FederatedCacheNodeResolver resolver;
+    DidResolverRegistry didResolver = mock(DidResolverRegistry.class);
+    Monitor monitor = mock(Monitor.class);
 
     @ParameterizedTest
     @MethodSource("argumentsStreamSuccess")
