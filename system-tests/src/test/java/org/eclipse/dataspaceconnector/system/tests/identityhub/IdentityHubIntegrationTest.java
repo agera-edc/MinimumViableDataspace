@@ -61,9 +61,9 @@ public class IdentityHubIntegrationTest {
     @ParameterizedTest
     @MethodSource("provideHubUrls")
     void retrieveVerifiableCredentials(String hubUrl, String region) {
-        await().atMost(20, SECONDS).untilAsserted(() -> singleVcInIdentityHub(hubUrl));
+        await().atMost(20, SECONDS).untilAsserted(() -> twoVCsInIdentityHub(hubUrl));
 
-        singleVcInIdentityHub(hubUrl)
+        twoVCsInIdentityHub(hubUrl)
                 .anySatisfy(jwt -> {
                     var claims = jwt.getJWTClaimsSet();
                     assertThat(claims.getIssuer()).as("Issuer is a Web DID").startsWith("did:web:");
@@ -88,7 +88,7 @@ public class IdentityHubIntegrationTest {
                 });
     }
 
-    private AbstractCollectionAssert<?, Collection<? extends SignedJWT>, SignedJWT, ObjectAssert<SignedJWT>> singleVcInIdentityHub(String hubUrl) {
+    private AbstractCollectionAssert<?, Collection<? extends SignedJWT>, SignedJWT, ObjectAssert<SignedJWT>> twoVCsInIdentityHub(String hubUrl) {
         var vcs = client.getVerifiableCredentials(hubUrl);
 
         assertThat(vcs.succeeded()).isTrue();
