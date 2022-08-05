@@ -239,7 +239,7 @@ docker run -i danedmunds/pem-to-jwk:1.2.1 --public --pretty < system-tests/resou
 
 ### Debugging MVD locally
 
-Follow the instructions in the previous sections to run an MVD with a consumer(company2) and provider(company1) locally using docker-compose.
+Follow the instructions in the previous sections to run an MVD with a consumer (company2) and provider (company1) locally using docker-compose.
 
 Once running, you can use a Java debugger to connect to the consumer (port 5006) and provider (port 5005) instances. If you are using IntelliJ you can use the provided "EDC consumer" or "EDC provider" [runtime configurations](../.run) to remote debug the connector instances.
 
