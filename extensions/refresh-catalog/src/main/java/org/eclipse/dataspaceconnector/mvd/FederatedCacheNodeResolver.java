@@ -38,7 +38,7 @@ class FederatedCacheNodeResolver {
     private final DidResolverRegistry resolver;
     private final Monitor monitor;
 
-    public FederatedCacheNodeResolver(DidResolverRegistry resolver, Monitor monitor) {
+    FederatedCacheNodeResolver(DidResolverRegistry resolver, Monitor monitor) {
         this.resolver = resolver;
         this.monitor = monitor;
     }
