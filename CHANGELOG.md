@@ -12,6 +12,8 @@ in the detailed section referring to by linking pull requests or issues.
 ### Overview
 
 ### Detailed Changes
+- Initial Identity Hub integration (#21)
+- Add JDK Logger
 
 #### Added
 
