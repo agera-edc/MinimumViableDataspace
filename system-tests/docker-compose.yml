@@ -20,6 +20,8 @@ services:
       EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS: 5
       EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS: 5
       REGISTRATION_SERVICE_API_URL: http://registration-service:8184/authority
+      EDC_WEB_REST_CORS_ENABLED: "true"
+      EDC_WEB_REST_CORS_HEADERS: "origin,content-type,accept,authorization,x-api-key"
     depends_on:
       - did-server
       - azurite
@@ -51,6 +53,8 @@ services:
       EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS: 5
       EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS: 5
       REGISTRATION_SERVICE_API_URL: http://registration-service:8184/authority
+      EDC_WEB_REST_CORS_ENABLED: "true"
+      EDC_WEB_REST_CORS_HEADERS: "origin,content-type,accept,authorization,x-api-key"
     depends_on:
       - did-server
       - azurite
@@ -82,6 +86,8 @@ services:
       EDC_CATALOG_CACHE_EXECUTION_DELAY_SECONDS: 5
       EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS: 5
       REGISTRATION_SERVICE_API_URL: http://registration-service:8184/authority
+      EDC_WEB_REST_CORS_ENABLED: "true"
+      EDC_WEB_REST_CORS_HEADERS: "origin,content-type,accept,authorization,x-api-key"
     depends_on:
       - did-server
       - azurite
@@ -166,3 +172,42 @@ services:
         condition: service_healthy
       registration-service:
         condition: service_healthy
+
+  # Data Dashboard (MVD UI) for participant provider
+  provider-datadashboard:
+    container_name: provider-datadashboard
+    build:
+      context: ${MVD_UI_PATH:?"MVD UI path env var required"}
+    volumes:
+      - ./resources/appconfig/provider:/usr/share/nginx/html/assets/config
+    depends_on:
+      provider:
+        condition: service_healthy
+    ports:
+      - "7080:80"
+
+  # Data Dashboard (MVD UI) for participant consumer-eu
+  consumer-eu-datadashboard:
+    container_name: consumer-eu-datadashboard
+    build:
+      context: ${MVD_UI_PATH:?"MVD UI path env var required"}
+    volumes:
+      - ./resources/appconfig/consumer-eu:/usr/share/nginx/html/assets/config
+    depends_on:
+      consumer-eu:
+        condition: service_healthy
+    ports:
+      - "7081:80"
+
+  # Data Dashboard (MVD UI) for participant consumer-us
+  consumer-us-datadashboard:
+    container_name: consumer-us-datadashboard
+    build:
+      context: ${MVD_UI_PATH:?"MVD UI path env var required"}
+    volumes:
+      - ./resources/appconfig/consumer-us:/usr/share/nginx/html/assets/config
+    depends_on:
+      consumer-us:
+        condition: service_healthy
+    ports:
+      - "7082:80"
