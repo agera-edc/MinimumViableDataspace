@@ -77,7 +77,7 @@ class FederatedCacheNodeResolverTest {
     }
 
     @Test
-    void getNode_success_twoIDSMessagingServices() {
+    void getNode_success_twoIdsMessagingServices() {
         String url1 = FAKER.internet().url();
         String url2 = FAKER.internet().url();
         when(didResolver.resolve(did)).thenReturn(Result.success(getDidDocument(of(idsMessagingService(url2), idsMessagingService(url1)))));
