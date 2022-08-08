@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 class FederatedCacheNodeResolverTest {
 
     static final String IDS_MESSAGING = "IDSMessaging";
-    static final Faker FAKER =  Faker.instance();
+    static final Faker FAKER = Faker.instance();
     static String did = "did:web:" + FAKER.internet().domainName();
     static String idsUrl = FAKER.internet().url();
 
@@ -50,7 +50,7 @@ class FederatedCacheNodeResolverTest {
     void getNode_success(List<Service> services) {
         when(didResolver.resolve(did)).thenReturn(Result.success(getDidDocument(services)));
 
-        resolver =  new FederatedCacheNodeResolver(didResolver, monitor);
+        resolver = new FederatedCacheNodeResolver(didResolver, monitor);
 
         var result = resolver.toFederatedCacheNode(new Participant().did(did));
 
@@ -66,7 +66,7 @@ class FederatedCacheNodeResolverTest {
     void getNode_failure(Result result) {
         when(didResolver.resolve(did)).thenReturn(result);
 
-        resolver =  new FederatedCacheNodeResolver(didResolver, monitor);
+        resolver = new FederatedCacheNodeResolver(didResolver, monitor);
 
         var nodeResult = resolver.toFederatedCacheNode(new Participant().did(did));
 

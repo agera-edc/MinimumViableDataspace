@@ -44,6 +44,7 @@ public class FederatedCacheNodeResolver {
 
     public Result<FederatedCacheNode> toFederatedCacheNode(Participant participant) {
         String did = participant.getDid();
+        monitor.debug(format("Resolving DidDocument for did %s.", did));
         Result<DidDocument> didDocument = resolver.resolve(did);
         if (didDocument.failed()) {
             monitor.severe(format("Failed to resolve DID document for %s. %s", did, didDocument.getFailureDetail()));
