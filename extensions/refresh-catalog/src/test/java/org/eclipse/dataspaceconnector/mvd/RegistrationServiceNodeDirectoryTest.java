@@ -57,7 +57,7 @@ class RegistrationServiceNodeDirectoryTest {
         when(resolver.toFederatedCacheNode(company1)).thenReturn(Result.success(node1));
         when(resolver.toFederatedCacheNode(company2)).thenReturn(Result.success(node2));
 
-        List<FederatedCacheNode> cacheNodes = service.getAll();
+        var cacheNodes = service.getAll();
         assertThat(cacheNodes)
                 .usingRecursiveFieldByFieldElementComparator()
                 .containsExactly(node1, node2);
@@ -74,7 +74,7 @@ class RegistrationServiceNodeDirectoryTest {
         when(resolver.toFederatedCacheNode(company1)).thenReturn(Result.success(node1));
         when(resolver.toFederatedCacheNode(company2)).thenReturn(Result.failure("failure"));
 
-        List<FederatedCacheNode> cacheNodes = service.getAll();
+        var cacheNodes = service.getAll();
         assertThat(cacheNodes)
                 .usingRecursiveFieldByFieldElementComparator()
                 .containsExactly(node1);

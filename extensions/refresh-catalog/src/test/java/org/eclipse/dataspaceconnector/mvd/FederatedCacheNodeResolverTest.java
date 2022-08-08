@@ -81,15 +81,21 @@ class FederatedCacheNodeResolverTest {
     private static Stream<Arguments> argumentsStreamSuccess() {
         return Stream.of(
                 arguments(List.of(new Service(FAKER.lorem().word(), IDS_MESSAGING, idsUrl))),
-                arguments(List.of(new Service(FAKER.lorem().word(), IDS_MESSAGING, idsUrl), new Service(FAKER.lorem().word(), FAKER.lorem().word(), FAKER.internet().url())))
+                arguments(List.of(new Service(FAKER.lorem().word(), IDS_MESSAGING, idsUrl), fakeService()))
         );
     }
 
     private static Stream<Arguments> argumentsStreamFailure() {
         return Stream.of(
                 arguments(Result.failure("failure")),
+                arguments(Result.success(getDidDocument(List.of(fakeService(), fakeService())))),
                 arguments(Result.success(getDidDocument(List.of())))
         );
+    }
+
+    @NotNull
+    private static Service fakeService() {
+        return new Service(FAKER.lorem().word(), FAKER.lorem().word(), FAKER.internet().url());
     }
 
 }

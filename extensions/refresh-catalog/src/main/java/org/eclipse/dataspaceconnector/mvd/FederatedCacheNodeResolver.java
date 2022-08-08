@@ -28,11 +28,12 @@ import java.util.Optional;
 import static java.lang.String.format;
 
 /**
- * Resolves the FederatedCacheNode from the Participant's did document.
+ * Resolves the {@link FederatedCacheNode}s from the Participant's Did Document.
  */
-public class FederatedCacheNodeResolver {
+class FederatedCacheNodeResolver {
 
     public static final String IDS_MESSAGING = "IDSMessaging";
+    public static final List<String> IDS_MULTIPART = List.of("ids-multipart");
 
     private final DidResolverRegistry resolver;
     private final Monitor monitor;
@@ -44,15 +45,15 @@ public class FederatedCacheNodeResolver {
 
     public Result<FederatedCacheNode> toFederatedCacheNode(Participant participant) {
         String did = participant.getDid();
-        monitor.debug(format("Resolving DidDocument for did %s.", did));
+        monitor.debug(format("Resolving Did Document for did %s.", did));
         Result<DidDocument> didDocument = resolver.resolve(did);
         if (didDocument.failed()) {
-            monitor.severe(format("Failed to resolve DID document for %s. %s", did, didDocument.getFailureDetail()));
-            return Result.failure("Can't resolve did document for participant: " + did);
+            monitor.severe(format("Failed to resolve DID Document for %s. %s", did, didDocument.getFailureDetail()));
+            return Result.failure("Can't resolve Did Document for participant: " + did);
         }
         return getUrl(didDocument)
-                .map(url -> Result.success(new FederatedCacheNode(didDocument.getContent().getId(), url, List.of("ids-multipart"))))
-                .orElseGet(() -> Result.failure(format("Can't resolve did document for participant: %s", did)));
+                .map(url -> Result.success(new FederatedCacheNode(didDocument.getContent().getId(), url, IDS_MULTIPART)))
+                .orElseGet(() -> Result.failure(format("Can't resolve Did Document for participant: %s", did)));
     }
 
     private Optional<String> getUrl(Result<DidDocument> didDocument) {
