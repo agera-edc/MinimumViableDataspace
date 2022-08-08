@@ -91,11 +91,6 @@ resource "azurerm_container_group" "edc" {
       protocol = "TCP"
     }
 
-    ports {
-      port     = 5005
-      protocol = "TCP"
-    }
-
     environment_variables = {
       EDC_IDS_ID         = local.connector_id
       EDC_CONNECTOR_NAME = local.connector_name

@@ -65,7 +65,7 @@ jobs:
 
       # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
-        run: az acr build --registry $ACR_NAME --image mvd/connector:${{ env.RESOURCES_PREFIX }} --build-arg JVM_ARGS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" .
+        run: az acr build --registry $ACR_NAME --image mvd/connector:${{ env.RESOURCES_PREFIX }} .
         working-directory: launcher
 
   # Build runtime image in Azure Container Registry, tagged with the unique run_number.
