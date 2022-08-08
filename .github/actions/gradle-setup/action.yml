@@ -21,9 +21,9 @@ runs:
     - name: Checkout Identity Hub
       uses: actions/checkout@v2
       with:
-        repository: agera-edc/IdentityHub
+        repository: eclipse-dataspaceconnector/IdentityHub
         path: IdentityHub
-        ref: feature/21/21-add-logging
+        ref: 86025904ee4324edad0cd44070b491045589c2c2
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
