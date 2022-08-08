@@ -22,6 +22,7 @@ import org.eclipse.dataspaceconnector.registration.client.models.Participant;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -29,6 +30,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mock;
@@ -38,6 +40,7 @@ class FederatedCacheNodeResolverTest {
 
     static final String IDS_MESSAGING = "IDSMessaging";
     static final Faker FAKER = Faker.instance();
+    public static final String SUPPORTED_PROTOCOL = "ids-multipart";
     static String did = "did:web:" + FAKER.internet().domainName();
     static String idsUrl = FAKER.internet().url();
 
@@ -58,7 +61,7 @@ class FederatedCacheNodeResolverTest {
         var node = result.getContent();
         assertThat(node.getName()).isEqualTo(did);
         assertThat(node.getTargetUrl()).isEqualTo(idsUrl);
-        assertThat(node.getSupportedProtocols()).containsExactly("ids-multipart");
+        assertThat(node.getSupportedProtocols()).containsExactly(SUPPORTED_PROTOCOL);
     }
 
     @ParameterizedTest
@@ -73,6 +76,23 @@ class FederatedCacheNodeResolverTest {
         assertThat(nodeResult.failed()).isTrue();
     }
 
+    @Test
+    void getNode_success_twoIDSMessagingServices() {
+        String url1 = FAKER.internet().url();
+        String url2 = FAKER.internet().url();
+        when(didResolver.resolve(did)).thenReturn(Result.success(getDidDocument(of(idsMessagingService(url2), idsMessagingService(url1)))));
+
+        resolver = new FederatedCacheNodeResolver(didResolver, monitor);
+
+        var result = resolver.toFederatedCacheNode(new Participant().did(did));
+
+        assertThat(result.succeeded()).isTrue();
+        var node = result.getContent();
+        assertThat(node.getName()).isEqualTo(did);
+        assertThat(node.getTargetUrl()).isIn(url1, url2);
+        assertThat(node.getSupportedProtocols()).containsExactly(SUPPORTED_PROTOCOL);
+    }
+
     @NotNull
     private static DidDocument getDidDocument(List<Service> services) {
         return DidDocument.Builder.newInstance().id(did).service(services).build();
@@ -80,22 +100,34 @@ class FederatedCacheNodeResolverTest {
 
     private static Stream<Arguments> argumentsStreamSuccess() {
         return Stream.of(
-                arguments(List.of(new Service(FAKER.lorem().word(), IDS_MESSAGING, idsUrl))),
-                arguments(List.of(new Service(FAKER.lorem().word(), IDS_MESSAGING, idsUrl), fakeService()))
+                arguments(of(idsMessagingService(idsUrl))),
+                arguments(of(idsMessagingService(idsUrl), idsMessagingService(idsUrl))),
+                arguments(of(idsMessagingService(idsUrl), fakeService()))
         );
     }
 
     private static Stream<Arguments> argumentsStreamFailure() {
         return Stream.of(
                 arguments(Result.failure("failure")),
-                arguments(Result.success(getDidDocument(List.of(fakeService(), fakeService())))),
-                arguments(Result.success(getDidDocument(List.of())))
+                arguments(Result.success(getDidDocument(of(fakeService(), fakeService())))),
+                arguments(Result.success(getDidDocument(of(service(idsUrl, FAKER.lorem().word()))))),
+                arguments(Result.success(getDidDocument(of())))
         );
     }
 
     @NotNull
     private static Service fakeService() {
-        return new Service(FAKER.lorem().word(), FAKER.lorem().word(), FAKER.internet().url());
+        return service(FAKER.internet().url(), FAKER.lorem().word());
+    }
+
+    @NotNull
+    private static Service idsMessagingService(String url) {
+        return service(url, IDS_MESSAGING);
+    }
+
+    @NotNull
+    private static Service service(String url, String type) {
+        return new Service(FAKER.lorem().word(), type, url);
     }
 
 }
