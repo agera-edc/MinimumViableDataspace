@@ -48,7 +48,7 @@ class FederatedCacheNodeResolver {
         monitor.debug(format("Resolving Did Document for did %s.", did));
         Result<DidDocument> didDocument = resolver.resolve(did);
         if (didDocument.failed()) {
-            monitor.severe(format("Failed to resolve DID Document for %s. %s", did, didDocument.getFailureDetail()));
+            monitor.severe(() -> format("Failed to resolve DID Document for %s. %s", did, didDocument.getFailureDetail()));
             return Result.failure("Can't resolve Did Document for participant: " + did);
         }
         return getUrl(didDocument)
