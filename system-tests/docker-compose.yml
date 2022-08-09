@@ -104,9 +104,9 @@ services:
     working_dir: /
     environment:
       API_KEY: ApiKeyDefaultValue
-      EDC_HOST: company1,company2,company3
-      ASSETS_STORAGE_ACCOUNT: company1assets,company2assets,company3assets
-      PARTICIPANT_ID: company1,company2,company3
+      EDC_HOST: company1:company2:company3
+      ASSETS_STORAGE_ACCOUNT: company1assets:company2assets:company3assets
+      PARTICIPANT_ID: company1:company2:company3
     depends_on:
       company1:
         condition: service_healthy
