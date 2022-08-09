@@ -1,6 +1,11 @@
 # System tests
 
-The system tests copies a file from a provider (`company1`) to a consumer (`company2`) blob storage account.
+The system tests verify the end-to-end deployment of MVD, including:
+
+-  That the Identity Hub contains Verifiable Credentials deployed by the CD pipeline.
+- That EDC Connectors can interact to populate a federated catalog, and copying a file from a provider (`company1`) to a consumer (`company2`) blob storage account.
+
+System tests are run both in local deployment (using docker compose) and in the Azure cloud.
 
 ## Publish/Build Tasks
 
