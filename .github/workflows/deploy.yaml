@@ -26,7 +26,7 @@ env:
 
 jobs:
 
-  CheckInputs:
+  Check-Inputs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Check resource prefix format: should be 3 to 7 lowercase letters and digits, starting with a letter.'
@@ -45,6 +45,8 @@ jobs:
 
   # Build runtime image in Azure Container Registry, tagged with the unique run_number.
   Build-Connector:
+    needs:
+      - Check-Inputs
     runs-on: ubuntu-latest
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}
@@ -76,6 +78,8 @@ jobs:
 
   # Build runtime image in Azure Container Registry, tagged with the unique run_number.
   Build-Registration-Service:
+    needs:
+      - Check-Inputs
     runs-on: ubuntu-latest
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}
@@ -106,6 +110,8 @@ jobs:
 
   # Build data dashboard webapp
   Build-Dashboard:
+    needs:
+      - Check-Inputs
     runs-on: ubuntu-latest
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}
