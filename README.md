@@ -39,26 +39,30 @@ Follow these steps to delete a dataspace instance and free up the corresponding 
 
 Additionally, to the services described in [system-tests/README.md](system-tests/README.md) the local development setup
 contains three MVD UIs (Data Dashboards) for each EDC participant. Systems Tests are not dependent on the Data
-Dashboards.
+Dashboards. Please follow the instructions in [system-tests/README.md](system-tests/README.md) to set up a local MVD environment for
+development purposes with the following exception to use the profile `ui` as described below.
 
-Please follow the instructions in [system-tests/README.md](system-tests/README.md) to set up a local MVD environment for
-development purposes with the following exception how to spin up docker compose.
-
-Run docker compose with the following profile:
+You need to check out the
+repository [eclipse-dataspaceconnector/DataDashboard](https://github.com/eclipse-dataspaceconnector/DataDashboard) or
+your corresponding fork. Set the environment variable `MVD_UI_PATH` to the path of the DataDashboard repository.
 
 Bash:
 
+TODO: test bash commands
+
 ```bash
-tbd
+$MVD_UI_PATH="/path/to/mvd/datadashboard"
+docker-compose --profile ui -f system-tests/docker-compose.yml up --build
 ```
 
 PowerShell:
 
 ```powershell
-tbd
+$Env:MVD_UI_PATH="/path/to/mvd/datadashboard"
+docker-compose --profile ui -f system-tests/docker-compose.yml up --build
 ```
 
-The profile `tbd` creates three Data Dashboards each connected to an EDC participant. The respective `app.config.json`
+The profile `ui` creates three Data Dashboards each connected to an EDC participant. The respective `app.config.json`
 files can be found in the respective directories:
 
 - `resources/appconfig/provider/app.config.json`
