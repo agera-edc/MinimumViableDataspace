@@ -57,6 +57,8 @@ docker-compose --profile ui -f system-tests/docker-compose.yml up --build
 
 PowerShell:
 
+> Docker Compose expects the path to use forward slashes instead of backslashes.
+
 ```powershell
 $Env:MVD_UI_PATH="/path/to/mvd/datadashboard"
 docker-compose --profile ui -f system-tests/docker-compose.yml up --build
