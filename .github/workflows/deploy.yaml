@@ -477,11 +477,5 @@ jobs:
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: Gatling reports
+          name: Gatling reports (cloud run)
           path: '**/build/reports/gatling/**'
-
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          files: "**/test-results/**/*.xml"

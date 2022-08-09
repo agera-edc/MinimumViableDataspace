@@ -72,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: Gatling reports
+          name: Gatling reports (local run)
           path: '**/build/reports/gatling/**'
 
       - name: Publish Test Results
