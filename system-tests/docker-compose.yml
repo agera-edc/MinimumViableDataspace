@@ -185,6 +185,7 @@ services:
         condition: service_healthy
     ports:
       - "7080:80"
+    profiles: ["ui"]
 
   # Data Dashboard (MVD UI) for participant consumer-eu
   consumer-eu-datadashboard:
@@ -198,6 +199,7 @@ services:
         condition: service_healthy
     ports:
       - "7081:80"
+    profiles: ["ui"]
 
   # Data Dashboard (MVD UI) for participant consumer-us
   consumer-us-datadashboard:
@@ -211,3 +213,4 @@ services:
         condition: service_healthy
     ports:
       - "7082:80"
+    profiles: ["ui"]

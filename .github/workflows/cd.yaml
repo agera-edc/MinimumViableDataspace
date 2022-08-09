@@ -65,4 +65,4 @@ jobs:
         if: always()
         env:
           REGISTRATION_SERVICE_LAUNCHER_PATH: ${{ runner.temp }}/RegistrationService/launcher
-          MVD_UI_PATH: ${{ runner.temp }}/DataDashboard
+          MVD_UI_PATH: DataDashboard

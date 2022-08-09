@@ -32,7 +32,6 @@ runs:
         path: DataDashboard
         ref: ab1b6fd0870fa5ec8c170915a2b44fae63d576bd
 
-
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
       with:

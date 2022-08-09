@@ -48,10 +48,8 @@ your corresponding fork. Set the environment variable `MVD_UI_PATH` to the path 
 
 Bash:
 
-TODO: test bash commands
-
 ```bash
-$MVD_UI_PATH="/path/to/mvd/datadashboard"
+export MVD_UI_PATH="/path/to/mvd/datadashboard"
 docker-compose --profile ui -f system-tests/docker-compose.yml up --build
 ```
 
@@ -84,7 +82,7 @@ Prerequisite: create a test document manually:
 
 - Connect to the **local** blob storage account (provided by Azurite) of the provider.
   - Storage account name: `providerassets`, storage account key: `key1`.
-  - [Storage Explorer](https://azure.microsoft.com/features/storage-explorer/) can be used to connect to the local
+  - [Microsoft Azure Storage Explorer](https://azure.microsoft.com/features/storage-explorer/) can be used to connect to the local
     storage account on `localhost:10000`.
 - Create a container named `src-container`. (Container name is defined for Postman request `Publish Master Data`
   in `deployment/data/MVD.postman_collection.json`)
@@ -95,10 +93,8 @@ All this can also be done using Azure CLI with the following lines from the root
 
 Bash:
 
-TODO: confirm bash script
-
 ```bash
-$conn_str="DefaultEndpointsProtocol=http;AccountName=providerassets;AccountKey=key1;BlobEndpoint=http://127.0.0.1:10000/providerassets;"
+conn_str="DefaultEndpointsProtocol=http;AccountName=providerassets;AccountKey=key1;BlobEndpoint=http://127.0.0.1:10000/providerassets;"
 az storage container create --name src-container --connection-string $conn_str
 az storage blob upload -f .\deployment\terraform\participant\sample-data\text-document.txt --container-name src-container --name text-document.txt --connection-string $conn_str
 ```
@@ -111,8 +107,8 @@ az storage container create --name src-container --connection-string $conn_str
 az storage blob upload -f .\deployment\terraform\participant\sample-data\text-document.txt --container-name src-container --name text-document.txt --connection-string $conn_str
 ```
 
-This should result in the following output. Via the Microsoft Azure Storage Explorer it would be possible to review the
-new container and the uploaded blob.
+This should result in a similar output as follows. Via the Microsoft Azure Storage Explorer it would be possible to
+review the new container and the uploaded blob.
 
 ```bash
 {
