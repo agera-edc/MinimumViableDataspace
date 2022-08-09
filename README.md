@@ -72,7 +72,7 @@ files can be found in the respective directories:
 That's it to run the local development environment. The following section `Run A Standard Scenario Locally` describes a
 standard scenario which can be optionally used with the local development environment.
 
-> Tip: The console output from the services spin up by Docker compose can be noisy. To decrease the output from the
+> Tip: The console output from the services spun up by Docker compose can be noisy. To decrease the output from the
 > services on the console set `EDC_CATALOG_CACHE_EXECUTION_PERIOD_SECONDS` to a higher value, e.g. 60, for each EDC
 > participant in `system-tests/docker-compose.yml`.
 
@@ -124,18 +124,20 @@ Finished[#############################################################]  100.000
 
 The following steps initiate and complete a file transfer with the provided test document.
 
-- Connect to provider (e.g. <http://localhost:7080>) and verify the existence of two assets in the section `Assets`.
-- Connect to consumer-eu (e.g. <http://localhost:7081>) and verify two existing assets from the provider in
+- Open the website of the provider (e.g. <http://localhost:7080>) and verify the existence of two assets in the
+  section `Assets`.
+- Open the website of the consumer-eu (e.g. <http://localhost:7081>) and verify two existing assets from the provider in
   the `Catalog Browser`.
   - In the `Catalog Browser` click `Negotiate` for the asset `test-document_company1`.
     - There should be a message `Contract Negotiation complete! Show me!` in less than a minute.
 - From the previous message click `Show me!`. If you missed it, switch manually to the section `Contracts`.
   - There should be a new contract. Click `Transfer` to initiate the transfer process.
-  - Select as destination `AzureStorage` and click `Start transfer`.
-  - There should be a message `Transfer [id] complete! Show me!` in less than a minute. (Where `id` is a GUID.)
+  - A dialog should open. Here, select as destination `AzureStorage` and click `Start transfer`.
+  - There should be a message `Transfer [id] complete! Show me!` in less than a minute. (Where `id` is a UUID.)
 - To verify the successful transfer the Storage Explorer can be used to look into the storage account of `consumer-eu`.
   - Storage account name and key is set in `system-tests/docker-compose.yml` for the service `azurite`. Default name
     is `consumereuassets`, key is `key2`.
+  - There should be new container in the storage account containing two files `.complete` and `test-document.txt`.
 
 ## Contributing
 
