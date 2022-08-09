@@ -91,6 +91,10 @@ resource "azurerm_container_group" "registration-service" {
       WEB_HTTP_AUTHORITY_PATH = local.registration_service_path_prefix
     }
 
+    secure_environment_variables = {
+      APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.dataspace.connection_string
+    }
+
     liveness_probe {
       http_get {
         port = local.edc_default_port
