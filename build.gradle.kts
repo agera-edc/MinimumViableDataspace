@@ -5,6 +5,11 @@ plugins {
 }
 
 allprojects {
+    apply(plugin = "java")
+    if (System.getenv("JACOCO") == "true") {
+        apply(plugin = "jacoco")
+    }
+
     repositories {
         mavenCentral()
         mavenLocal()
@@ -13,19 +18,23 @@ allprojects {
         }
     }
 
-    if (System.getenv("JACOCO") == "true") {
-        apply(plugin = "jacoco")
-        tasks.jacocoTestReport {
-            reports {
-                xml.required.set(true)
-            }
-        }
-    }
-
-    tasks.withType<Test> {
+    tasks.test {
         useJUnitPlatform()
         testLogging {
             showStandardStreams = true
+        }
+    }
+
+    if (System.getenv("JACOCO") == "true") {
+        apply(plugin = "jacoco")
+        tasks.test {
+            finalizedBy(tasks.jacocoTestReport)
+        }
+        tasks.jacocoTestReport {
+            reports {
+                // Generate XML report for codecov.io
+                xml.required.set(true)
+            }
         }
     }
 }
