@@ -80,3 +80,6 @@ jobs:
         if: always()
         with:
           files: "**/test-results/**/*.xml"
+
+      - name: CodeCov
+          uses: codecov/codecov-action@v3
