@@ -96,7 +96,7 @@ Bash:
 ```bash
 conn_str="DefaultEndpointsProtocol=http;AccountName=providerassets;AccountKey=key1;BlobEndpoint=http://127.0.0.1:10000/providerassets;"
 az storage container create --name src-container --connection-string $conn_str
-az storage blob upload -f .\deployment\terraform\participant\sample-data\text-document.txt --container-name src-container --name text-document.txt --connection-string $conn_str
+az storage blob upload -f ./deployment/terraform/participant/sample-data/text-document.txt --container-name src-container --name text-document.txt --connection-string $conn_str
 ```
 
 PowerShell:
