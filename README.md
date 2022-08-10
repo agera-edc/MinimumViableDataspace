@@ -37,7 +37,7 @@ Follow these steps to delete a dataspace instance and free up the corresponding 
 
 ## Local Development Setup
 
-Additionally, to the services described in [system-tests/README.md](system-tests/README.md) the local development setup
+In addition to the services described in [system-tests/README.md](system-tests/README.md) the local development setup
 contains three MVD UIs (Data Dashboards) for each EDC participant. Systems Tests are not dependent on the Data
 Dashboards. Please follow the instructions in [system-tests/README.md](system-tests/README.md) to set up a local MVD environment for
 development purposes with the following exception to use the profile `ui` as described below.
