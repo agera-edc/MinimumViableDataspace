@@ -104,6 +104,7 @@ jobs:
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}
     steps:
+      - uses: actions/checkout@v2
       - uses: ./.github/actions/gradle-setup
       - name: 'Az CLI login'
         uses: azure/login@v1
