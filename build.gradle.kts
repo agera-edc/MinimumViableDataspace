@@ -1,6 +1,7 @@
 plugins {
     java
     `java-library`
+    jacoco
 }
 
 allprojects {
@@ -9,6 +10,15 @@ allprojects {
         mavenLocal()
         maven {
             url = uri("https://maven.iais.fraunhofer.de/artifactory/eis-ids-public/")
+        }
+    }
+
+    if (System.getenv("JACOCO") == "true") {
+        apply(plugin = "jacoco")
+        tasks.jacocoTestReport {
+            reports {
+                xml.required.set(true)
+            }
         }
     }
 
