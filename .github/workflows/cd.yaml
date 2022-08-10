@@ -82,8 +82,5 @@ jobs:
         with:
           files: "**/test-results/**/*.xml"
 
-      #FIXME
-      - run: find .
-
       - name: CodeCov
         uses: codecov/codecov-action@v3
