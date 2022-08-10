@@ -60,6 +60,7 @@ jobs:
         run: ./gradlew test
         timeout-minutes: 10
         env:
+          JACOCO: "true"
           TEST_ENVIRONMENT: "local"
 
       - name: 'docker-compose logs'
@@ -80,6 +81,9 @@ jobs:
         if: always()
         with:
           files: "**/test-results/**/*.xml"
+
+      #FIXME
+      - run: find .
 
       - name: CodeCov
         uses: codecov/codecov-action@v3
