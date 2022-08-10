@@ -1,0 +1,481 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      resources_prefix:
+        description: 'Resources name prefix used to avoid naming conflicts between resources of different DataSpaces.'
+        required: true
+        type: string
+
+  workflow_dispatch:
+    inputs:
+      resources_prefix:
+        description: 'Resources name prefix used to avoid naming conflicts between resources of different DataSpaces.'
+        required: true
+        type: string
+
+# Grant permissions to obtain federated identity credentials
+# see https://docs.github.com/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-azure
+permissions:
+  id-token: write
+  contents: read
+  checks: write
+  pull-requests: write
+
+env:
+  RESOURCES_PREFIX: ${{ github.event.inputs.resources_prefix || inputs.resources_prefix }}
+
+jobs:
+
+  Matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          matrix=$(jq -c . participants.json)
+          echo "::set-output name=matrix::$matrix"
+
+  # Build runtime image in Azure Container Registry, tagged with the unique run_number.
+  Build-Connector:
+    runs-on: ubuntu-latest
+    env:
+      ACR_NAME: ${{ secrets.ACR_NAME }}
+    steps:
+      # Checkout MVD code
+      - uses: actions/checkout@v2
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Login to ACR'
+        run: az acr login -n $ACR_NAME
+
+      - uses: ./.github/actions/gradle-setup
+
+      # Build MVD runtime JAR locally.
+      # The result is a JAR file in MVD/launcher/build/libs.
+      - name: 'Build runtime JAR'
+        run: ./gradlew launcher:shadowJar
+
+      # Build Docker runtime image remotely on ACR & push it to the registry.
+      - name: 'Build image'
+        run: az acr build --registry $ACR_NAME --image mvd/connector:${{ env.RESOURCES_PREFIX }} .
+        working-directory: launcher
+
+  # Build runtime image in Azure Container Registry, tagged with the unique run_number.
+  Build-Registration-Service:
+    runs-on: ubuntu-latest
+    env:
+      ACR_NAME: ${{ secrets.ACR_NAME }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/gradle-setup
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Login to ACR'
+        run: az acr login -n $ACR_NAME
+
+      # Build Registration Service runtime JAR locally.
+      # The result is a JAR file in launcher/build/libs.
+      - name: 'Build runtime JAR'
+        run: ./gradlew launcher:shadowJar
+        working-directory: ${{ runner.temp }}/RegistrationService
+
+      # Build Docker runtime image remotely on ACR & push it to the registry.
+      - name: 'Build image'
+        run: az acr build --registry $ACR_NAME --image mvd/registration-service:${{ env.RESOURCES_PREFIX }} .
+        working-directory: ${{ runner.temp }}/RegistrationService/launcher
+
+  # Build data dashboard webapp
+  Build-Dashboard:
+    runs-on: ubuntu-latest
+    env:
+      ACR_NAME: ${{ secrets.ACR_NAME }}
+    steps:
+      - name: Checkout DataDashboard
+        uses: actions/checkout@v2
+        with:
+          repository: eclipse-dataspaceconnector/DataDashboard
+          ref: ab1b6fd0870fa5ec8c170915a2b44fae63d576bd
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Login to ACR'
+        run: az acr login -n $ACR_NAME
+
+      # Build Docker runtime image remotely on ACR & push it to the registry.
+      - name: 'Build image'
+        run: az acr build --registry $ACR_NAME --image mvd/data-dashboard:${{ env.RESOURCES_PREFIX }} .
+
+  # Deploy shared dataspace components.
+  Deploy-Dataspace:
+    needs:
+      - Build-Registration-Service
+    runs-on: ubuntu-latest
+    outputs:
+      app_insights_connection_string: ${{ steps.runterraform.outputs.app_insights_connection_string }}
+      registration_service_url: ${{ steps.runterraform.outputs.registration_service_url }}
+      gaiax_did_host: ${{ steps.runterraform.outputs.gaiax_did_host }}
+      dataspace_did_host: ${{ steps.runterraform.outputs.dataspace_did_host }}
+
+    defaults:
+      run:
+        working-directory: deployment/terraform/dataspace
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: 'Generate GAIA-X Authority key'
+        uses: ./.github/actions/generate-key
+        with:
+          keyFileNamePrefix: gaiaxkey
+
+      - name: 'Generate Dataspace Authority key'
+        uses: ./.github/actions/generate-key
+        with:
+          keyFileNamePrefix: authoritykey
+
+      - name: 'Create tfvars file'
+        run: |
+          cat > terraform.tfvars <<EOF
+          acr_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+          acr_name = "${{ secrets.ACR_NAME }}"
+          prefix = "${{ env.RESOURCES_PREFIX }}"
+          resource_group = "rg-${{ env.RESOURCES_PREFIX }}"
+          registrationservice_runtime_image = "mvd/registration-service:${{ env.RESOURCES_PREFIX }}"
+          application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
+          EOF
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Upload tfvars file'
+        run: az storage blob upload --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f terraform.tfvars -n "${{ env.RESOURCES_PREFIX }}.tfvars" --auth-mode key
+
+      - name: 'Run terraform'
+        id: runterraform
+        run: |
+          # Create backend.conf file to retrieve the remote terraform state during terraform init.
+          echo '
+            resource_group_name  = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+            storage_account_name = "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}"
+            container_name       = "${{ secrets.TERRAFORM_STATE_CONTAINER }}"
+            key                  = "${{ env.RESOURCES_PREFIX }}.tfstate"
+          ' >> backend.conf
+          terraform init -backend-config=backend.conf
+          terraform apply -auto-approve
+          connector_name=$(terraform output -raw connector_name)
+          echo "::set-output name=connector_name::${connector_name}"
+          key_vault=$(terraform output -raw key_vault)
+          echo "::set-output name=key_vault::${key_vault}"
+          app_insights_connection_string=$(terraform output -raw app_insights_connection_string)
+          echo "::set-output name=app_insights_connection_string::${app_insights_connection_string}"
+          registration_service_url=$(terraform output -raw registration_service_url)
+          echo "::set-output name=registration_service_url::${registration_service_url}"
+          dataspace_did_host=$(terraform output -raw dataspace_did_host)
+          echo "::set-output name=dataspace_did_host::${dataspace_did_host}"
+          gaiax_did_host=$(terraform output -raw gaiax_did_host)
+          echo "::set-output name=gaiax_did_host::${gaiax_did_host}"
+
+        env:
+          # Authentication settings for Terraform AzureRM provider
+          # See https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          # Terraform variables not included in terraform.tfvars.
+          TF_VAR_public_key_jwk_file_authority: "authoritykey.public.jwk"
+          TF_VAR_public_key_jwk_file_gaiax: "gaiaxkey.public.jwk"
+
+      - name: 'Az CLI re-login (refresh role assignments)'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Upload private key as vault secret'
+        run: az keyvault secret set --name "$name" --vault-name "$vault" --file authoritykey.pem -o none
+        env:
+          name: ${{ steps.runterraform.outputs.connector_name }}
+          vault: ${{ steps.runterraform.outputs.key_vault }}
+
+      - name: 'Verify GAIA-X Authority DID endpoint is available'
+        run: curl https://${{ steps.runterraform.outputs.gaiax_did_host }}/.well-known/did.json | jq '.id'
+
+      - name: 'Verify Dataspace DID endpoint is available'
+        run: curl https://${{ steps.runterraform.outputs.dataspace_did_host }}/.well-known/did.json | jq '.id'
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: gaiaxkey
+          path: deployment/terraform/dataspace/gaiaxkey.pem
+
+  # Deploy dataspace participants in parallel.
+  Deploy-Participants:
+    needs:
+      - Deploy-Dataspace
+      - Build-Connector
+      - Build-Dashboard
+      - Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      company1_edc_host: ${{ steps.runterraform.outputs.company1_edc_host }}
+      company2_edc_host: ${{ steps.runterraform.outputs.company2_edc_host }}
+      company3_edc_host: ${{ steps.runterraform.outputs.company3_edc_host }}
+      company1_key_vault: ${{ steps.runterraform.outputs.company1_key_vault }}
+      company2_key_vault: ${{ steps.runterraform.outputs.company2_key_vault }}
+      company3_key_vault: ${{ steps.runterraform.outputs.company3_key_vault }}
+      company1_api_key: ${{ steps.runterraform.outputs.company1_api_key }}
+      company2_api_key: ${{ steps.runterraform.outputs.company2_api_key }}
+      company3_api_key: ${{ steps.runterraform.outputs.company3_api_key }}
+      company1_participant_did_host: ${{ steps.runterraform.outputs.company1_participant_did_host }}
+      company2_participant_did_host: ${{ steps.runterraform.outputs.company2_participant_did_host }}
+      company3_participant_did_host: ${{ steps.runterraform.outputs.company3_participant_did_host }}
+      company1_connector_name: ${{ steps.runterraform.outputs.company1_connector_name }}
+      company2_connector_name: ${{ steps.runterraform.outputs.company2_connector_name }}
+      company3_connector_name: ${{ steps.runterraform.outputs.company3_connector_name }}
+      company1_assets_storage_account: ${{ steps.runterraform.outputs.company1_assets_storage_account }}
+      company2_assets_storage_account: ${{ steps.runterraform.outputs.company2_assets_storage_account }}
+      company3_assets_storage_account: ${{ steps.runterraform.outputs.company3_assets_storage_account }}
+
+    strategy:
+      matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
+
+    defaults:
+      run:
+        working-directory: deployment/terraform/participant
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ./.github/actions/gradle-setup
+
+      - name: 'Generate Participant key'
+        uses: ./.github/actions/generate-key
+        with:
+          keyFileNamePrefix: participantkey
+          directory: deployment/terraform/participant
+
+      - name: 'Create tfvars file'
+        run: |
+          cat > terraform.tfvars <<EOF
+          acr_resource_group = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+          acr_name = "${{ secrets.ACR_NAME }}"
+          participant_name = "${{ matrix.participant }}"
+          participant_region = "${{ matrix.region }}"
+          data_dashboard_theme = "${{ matrix.data_dashboard_theme }}"
+          prefix = "${{ env.RESOURCES_PREFIX }}"
+          resource_group = "rg-${{ matrix.participant }}-${{ env.RESOURCES_PREFIX }}"
+          runtime_image = "mvd/connector:${{ env.RESOURCES_PREFIX }}"
+          dashboard_image = "mvd/data-dashboard:${{ env.RESOURCES_PREFIX }}"
+          application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
+          application_sp_client_id = "${{ secrets.APP_CLIENT_ID }}"
+          registration_service_api_url = "${{ needs.Deploy-Dataspace.outputs.registration_service_url }}"
+          EOF
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Upload tfvars file'
+        run: az storage blob upload --account-name "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}" -c "${{ secrets.TERRAFORM_STATE_CONTAINER }}" -f terraform.tfvars -n "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfvars" --auth-mode key
+
+      - name: 'Run terraform'
+        id: runterraform
+        run: |
+          # Create backend.conf file to retrieve the remote terraform state during terraform init.
+          echo '
+            resource_group_name  = "${{ secrets.COMMON_RESOURCE_GROUP }}"
+            storage_account_name = "${{ secrets.TERRAFORM_STATE_STORAGE_ACCOUNT }}"
+            container_name       = "${{ secrets.TERRAFORM_STATE_CONTAINER }}"
+            key                  = "${{ matrix.participant }}${{ env.RESOURCES_PREFIX }}.tfstate"
+          ' >> backend.conf
+          terraform init -backend-config=backend.conf
+          terraform apply -auto-approve
+          CONNECTOR_NAME=$(terraform output -raw connector_name)
+          PARTICIPANT_DID_HOST=$(terraform output -raw participant_did_host)
+          EDC_HOST=$(terraform output -raw edc_host)
+          ASSETS_STORAGE_ACCOUNT=$(terraform output -raw assets_storage_account)
+          ASSETS_STORAGE_ACCOUNT_KEY=$(terraform output -raw assets_storage_account_key)
+          INBOX_STORAGE_ACCOUNT=$(terraform output -raw inbox_storage_account)
+          INBOX_STORAGE_ACCOUNT_KEY=$(terraform output -raw inbox_storage_account_key)
+          KEY_VAULT=$(terraform output -raw key_vault)
+          WEBAPP_URL=$(terraform output -raw webapp_url)
+          API_KEY=$(terraform output -raw api_key)
+          echo "::notice title=MVD WebApp for ${{ matrix.participant }}::$WEBAPP_URL"
+          echo "ASSETS_STORAGE_ACCOUNT=$ASSETS_STORAGE_ACCOUNT" >> $GITHUB_ENV
+          echo "ASSETS_STORAGE_ACCOUNT_KEY=$ASSETS_STORAGE_ACCOUNT_KEY" >> $GITHUB_ENV
+          echo "INBOX_STORAGE_ACCOUNT=$INBOX_STORAGE_ACCOUNT" >> $GITHUB_ENV
+          echo "INBOX_STORAGE_ACCOUNT_KEY=$INBOX_STORAGE_ACCOUNT_KEY" >> $GITHUB_ENV
+          echo "PARTICIPANT_DID_HOST=$PARTICIPANT_DID_HOST" >> $GITHUB_ENV
+          echo "EDC_HOST=$EDC_HOST" >> $GITHUB_ENV
+          echo "API_KEY=$API_KEY" >> $GITHUB_ENV
+          echo "CONNECTOR_NAME=$CONNECTOR_NAME" >> $GITHUB_ENV
+          echo "KEY_VAULT=$KEY_VAULT" >> $GITHUB_ENV
+          echo "::set-output name=${{ matrix.participant }}_edc_host::${EDC_HOST}"
+          echo "::set-output name=${{ matrix.participant }}_key_vault::${KEY_VAULT}"
+          echo "::set-output name=${{ matrix.participant }}_api_key::${API_KEY}"
+          echo "::set-output name=${{ matrix.participant }}_connector_name::${CONNECTOR_NAME}"
+          echo "::set-output name=${{ matrix.participant }}_did_host::${PARTICIPANT_DID_HOST}"
+          echo "::set-output name=${{ matrix.participant }}_assets_storage_account::${ASSETS_STORAGE_ACCOUNT}"
+
+        env:
+
+          # Authentication settings for Terraform AzureRM provider
+          # See https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+          # Terraform variables not included in terraform.tfvars.
+          TF_VAR_public_key_jwk_file: "participantkey.public.jwk"
+          TF_VAR_application_sp_client_secret: ${{ secrets.APP_CLIENT_SECRET }}
+          TF_VAR_app_insights_connection_string: ${{ needs.Deploy-Dataspace.outputs.app_insights_connection_string }}
+
+      - name: 'Az CLI re-login (refresh role assignments)'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'Upload private key as vault secret'
+        run: az keyvault secret set --name "$CONNECTOR_NAME" --vault-name "$KEY_VAULT" --file participantkey.pem -o none
+
+      - name: 'Upload asset storage account key as vault secret'
+        run: az keyvault secret set --name "$ASSETS_STORAGE_ACCOUNT-key1" --vault-name "$KEY_VAULT" --value "$ASSETS_STORAGE_ACCOUNT_KEY" -o none
+
+      - name: 'Upload inbox storage account key as vault secret'
+        run: az keyvault secret set --name "$INBOX_STORAGE_ACCOUNT-key1" --vault-name "$KEY_VAULT" --value "$INBOX_STORAGE_ACCOUNT_KEY" -o none
+
+      # To support --retry-all-errors flag at least curl version 7.71.0 is required.
+      - name: 'Upgrade Curl'
+        run: sudo -E bash deployment/curl-upgrade.sh
+        working-directory: .
+        env:
+          VERSION: 7.84.0
+
+      - name: 'Verify did endpoint is available'
+        run: curl https://$PARTICIPANT_DID_HOST/.well-known/did.json | jq '.id'
+
+      - name: 'Verify deployed EDC is healthy'
+        run: curl --retry 10 --retry-all-errors --fail http://${EDC_HOST}:8181/api/check/health
+
+      - name: 'Seed data'
+        env:
+          PARTICIPANT_ID: ${{ matrix.participant }}
+        run: |
+          npm install -g newman
+          deployment/seed-data.sh
+        working-directory: .
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: gaiaxkey
+          path: deployment/terraform/participant
+
+      - name: 'Push region verifiable credential'
+        run: |
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.identityhub:identity-hub-cli:$cli_version:jar:all -DoutputDirectory=.
+          
+          id=$(uuidgen)
+          
+          java -jar identity-hub-cli-$cli_version-all.jar -s=$identityHubUrl vc add \
+            -c='{"id":"'$id'","credentialSubject":{"region":"'$region'"}}' \
+            -b="did:web:$PARTICIPANT_DID_HOST" \
+            -i="did:web:$issuer" \
+            -k="gaiaxkey.pem"
+          
+          java -jar identity-hub-cli-$cli_version-all.jar -s=$identityHubUrl vc list
+        env:
+          cli_version: 0.0.1-SNAPSHOT
+          region: ${{ matrix.region }}
+          issuer: ${{ needs.Deploy-Dataspace.outputs.gaiax_did_host }}
+          identityHubUrl: http://${{ env.EDC_HOST }}:8181/api/identity-hub
+
+      - name: 'Register participant'
+        run: |
+          mvn dependency:copy -Dartifact=org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:$REGISTRATION_SERVICE_VERSION:jar:all -DoutputDirectory=.
+          java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
+            -d did:web:$DATASPACE_DID_HOST \
+            -c did:web:$PARTICIPANT_DID_HOST \
+            -k participantkey.pem \
+            participants add \
+            --ids-url "http://${{ env.EDC_HOST }}:8282"
+        env:
+          REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
+          DATASPACE_DID_HOST: ${{ needs.Deploy-Dataspace.outputs.dataspace_did_host }}
+
+  Verify:
+    needs:
+      - Deploy-Participants
+      - Deploy-Dataspace
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout MVD code
+      - uses: actions/checkout@v2
+
+      - uses: ./.github/actions/gradle-setup
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: 'System tests'
+        run: |
+          ./gradlew :system-tests:test
+        env:
+          PROVIDER_IDS_URL: http://${{ needs.Deploy-Participants.outputs.company1_edc_host }}:8282
+          PROVIDER_MANAGEMENT_URL: http://${{ needs.Deploy-Participants.outputs.company1_edc_host }}:9191
+          CONSUMER_MANAGEMENT_URL: http://${{ needs.Deploy-Participants.outputs.company2_edc_host }}:9191
+          CONSUMER_EU_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company2_key_vault }}
+          CONSUMER_US_KEY_VAULT: ${{ needs.Deploy-Participants.outputs.company3_key_vault }}
+          CONSUMER_EU_CATALOG_URL: http://${{ needs.Deploy-Participants.outputs.company2_edc_host }}:8181/api/federatedcatalog
+          CONSUMER_US_CATALOG_URL: http://${{ needs.Deploy-Participants.outputs.company3_edc_host }}:8181/api/federatedcatalog
+          PROVIDER_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company1_participant_did_host }}
+          CONSUMER_EU_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company2_participant_did_host }}
+          CONSUMER_US_DID_URL: did:web:${{ needs.Deploy-Participants.outputs.company3_participant_did_host }}
+          PROVIDER_IDENTITY_HUB_URL: http://${{ needs.Deploy-Participants.outputs.company1_edc_host }}:8181/api/identity-hub
+          CONSUMER_EU_IDENTITY_HUB_URL: http://${{ needs.Deploy-Participants.outputs.company2_edc_host }}:8181/api/identity-hub
+          CONSUMER_US_IDENTITY_HUB_URL: http://${{ needs.Deploy-Participants.outputs.company3_edc_host }}:8181/api/identity-hub
+          API_KEY: ${{ needs.Deploy-Participants.outputs.company2_api_key }}
+          TEST_ENVIRONMENT: "cloud"
+
+      - name: "Publish Gatling report"
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Gatling reports (cloud run)
+          path: '**/build/reports/gatling/**'
