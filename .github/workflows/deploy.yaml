@@ -104,6 +104,7 @@ jobs:
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}
     steps:
+      - uses: ./.github/actions/gradle-setup
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
@@ -116,8 +117,7 @@ jobs:
 
       # Build Docker runtime image remotely on ACR & push it to the registry.
       - name: 'Build image'
-        run: az acr build --registry $ACR_NAME --image mvd/data-dashboard:${{ env.RESOURCES_PREFIX }} .
-        working-directory: DataDashboard
+        run: az acr build --registry $ACR_NAME --image mvd/data-dashboard:${{ env.RESOURCES_PREFIX }} DataDashboard
 
   # Deploy shared dataspace components.
   Deploy-Dataspace:
