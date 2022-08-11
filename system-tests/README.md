@@ -104,7 +104,7 @@ Execute the following command from `Identity Hub` root folder:
 Execute the following command from `Registration Service` root folder:
 
 ```bash
-./gradlew publishToMavenLocal
+./gradlew publishToMavenLocal -P "skip.signing"
 ```
 
 <br />
