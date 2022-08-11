@@ -37,30 +37,35 @@ Follow these steps to delete a dataspace instance and free up the corresponding 
 
 ## Local Development Setup
 
-In addition to the services described in [system-tests/README.md](system-tests/README.md) the local development setup
-contains three MVD UIs (Data Dashboards) for each EDC participant. Systems Tests are not dependent on the Data
-Dashboards. Please follow the instructions in [system-tests/README.md](system-tests/README.md) to set up a local MVD environment for
-development purposes with the following exception to use the profile `ui` as described below.
+The MVD backend and MVD UI (Data Dashboard) can be run locally for testing and development.
 
-You need to check out the
-repository [eclipse-dataspaceconnector/DataDashboard](https://github.com/eclipse-dataspaceconnector/DataDashboard) or
-your corresponding fork. Set the environment variable `MVD_UI_PATH` to the path of the DataDashboard repository.
+1. Check out the
+   repository [eclipse-dataspaceconnector/DataDashboard](https://github.com/eclipse-dataspaceconnector/DataDashboard) or
+   your corresponding fork.
+2. Set the environment variable `MVD_UI_PATH` to the path of the DataDashboard repository. (See example below.)
+3. Use the instructions in section `Publish/Build Tasks` [system-tests/README.md](system-tests/README.md) to set up a
+   local MVD environment with the exception to use the profile `ui`. (See example below.)
+   - In order to verify your local environment works properly, also follow section `Local Test Execution`
+     in `system-tests/README.md` .
+
+> Using the profile `ui` will create three MVD UIs (Data Dashboards) for each EDC participant in addition to the
+> services described in [system-tests/README.md](system-tests/README.md).
 
 Bash:
 
 ```bash
-export MVD_UI_PATH="/path/to/mvd/datadashboard"
+export MVD_UI_PATH="/path/to/mvd-datadashboard"
 docker-compose --profile ui -f system-tests/docker-compose.yml up --build
 ```
 
 PowerShell:
 
-> Docker Compose expects the path to use forward slashes instead of backslashes.
-
 ```powershell
-$Env:MVD_UI_PATH="/path/to/mvd/datadashboard"
+$Env:MVD_UI_PATH="/path/to/mvd-datadashboard"
 docker-compose --profile ui -f system-tests/docker-compose.yml up --build
 ```
+
+> In Windows Docker Compose expects the path to use forward slashes instead of backslashes.
 
 The profile `ui` creates three Data Dashboards each connected to an EDC participant. The respective `app.config.json`
 files can be found in the respective directories:
