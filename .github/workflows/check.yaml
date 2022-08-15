@@ -17,11 +17,10 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/gradle-setup
 
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest
+
       - name: Check Terraform files are properly formatted (run "terraform fmt -recursive" to fix)
         run: |
           terraform fmt -recursive
           git diff --exit-code
-
-      - name: Run Checkstyle
-        run: ./gradlew checkstyleMain checkstyleTest
-
