@@ -14,9 +14,9 @@ runs:
     - name: Checkout Registration Service
       uses: actions/checkout@v2
       with:
-        repository: eclipse-dataspaceconnector/RegistrationService
+        repository: agera-edc/RegistrationService
         path: RegistrationService
-        ref: 0b39c0b0cb1884af58d829fa8396cfa3cf609117
+        ref: feature/247/247-add-appinsights
 
     - name: Checkout Identity Hub
       uses: actions/checkout@v2
