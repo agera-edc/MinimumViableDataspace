@@ -28,7 +28,6 @@ function waitForOnboarding() {
           sleep 1
       fi
       retryCount=$((retryCount+1))
-      echo $retryCount
   done
   if [ "$onboardingCompleted" == false ]; then
       echo "$participantDid onboarding is not completed yet. Exiting..."

@@ -59,7 +59,7 @@ jobs:
 
       - name: 'Run MVD docker-compose'
         run: docker-compose --profile ui -f system-tests/docker-compose.yml up --build --wait
-        timeout-minutes: 20
+        timeout-minutes: 10
         env:
           REGISTRATION_SERVICE_LAUNCHER_PATH: ${{ runner.temp }}/RegistrationService/launcher
           MVD_UI_PATH: DataDashboard
