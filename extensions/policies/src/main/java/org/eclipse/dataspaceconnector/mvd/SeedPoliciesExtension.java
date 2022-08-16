@@ -68,5 +68,4 @@ public class SeedPoliciesExtension implements ServiceExtension {
 
         policyEngine.registerFunction(ALL_SCOPES, Permission.class, ABS_SPATIAL_POSITION, new RegionConstraintFunction(typeManager.getMapper(), monitor));
     }
-
 }
