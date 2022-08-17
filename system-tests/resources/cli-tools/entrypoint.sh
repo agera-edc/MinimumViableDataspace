@@ -45,8 +45,7 @@ function registerParticipant() {
               --http-scheme \
               -k=/resources/vault/$participantName/private-key.pem \
               -c="$participantDid" \
-               participants add \
-              --ids-url "http://$participantName:8282"
+               participants add
 
 # wait for the participant to be onboarded
   waitForOnboarding "$participantName" "$participantDid"
