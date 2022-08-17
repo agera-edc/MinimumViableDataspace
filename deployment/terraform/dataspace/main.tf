@@ -85,7 +85,7 @@ resource "azurerm_container_group" "registration-service" {
     }
 
     environment_variables = {
-      EDC_CONNECTOR_NAME      = local.connector_name
+      EDC_CONNECTOR_NAME = local.connector_name
 
       EDC_VAULT_NAME     = azurerm_key_vault.registrationservice.name
       EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
