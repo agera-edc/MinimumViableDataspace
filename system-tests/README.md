@@ -145,6 +145,7 @@ Copy Identity Hub client-cli jar which should be located at `<Identity-Hub-root-
 From the `Registration Service` root folder, execute the following command:
 
 ```bash
+./gradlew -DuseFsVault="true" :launcher:shadowJar
 ./gradlew :client-cli:shadowJar
 ```
 
