@@ -86,6 +86,13 @@ resource "azurerm_container_group" "registration-service" {
 
     environment_variables = {
       EDC_CONNECTOR_NAME      = local.connector_name
+
+      EDC_VAULT_NAME     = azurerm_key_vault.registrationservice.name
+      EDC_VAULT_TENANTID = data.azurerm_client_config.current_client.tenant_id
+      EDC_VAULT_CLIENTID = var.application_sp_client_id
+
+      EDC_IDENTITY_DID_URL = local.dataspace_did_uri
+
       JWT_AUDIENCE            = local.registration_service_url
       WEB_HTTP_AUTHORITY_PORT = local.registration_service_port
       WEB_HTTP_AUTHORITY_PATH = local.registration_service_path_prefix
@@ -128,6 +135,13 @@ resource "azurerm_role_assignment" "current-user-secretsofficer" {
   scope                = azurerm_key_vault.registrationservice.id
   role_definition_name = "Key Vault Secrets Officer"
   principal_id         = data.azurerm_client_config.current_client.object_id
+}
+
+# Authority private key as secret in key vault
+resource "azurerm_key_vault_secret" "authority-private-key" {
+  name         = local.connector_name
+  value        = file(var.private_key_pem_file_authority)
+  key_vault_id = azurerm_key_vault.registrationservice.id
 }
 
 # Internal Dataspace Authority resources (Dataspace DID)

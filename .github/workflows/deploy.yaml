@@ -167,6 +167,7 @@ jobs:
           resource_group = "rg-${{ env.RESOURCES_PREFIX }}"
           registrationservice_runtime_image = "mvd/registration-service:${{ env.RESOURCES_PREFIX }}"
           application_sp_object_id = "${{ secrets.APP_OBJECT_ID }}"
+          application_sp_client_id = "${{ secrets.APP_CLIENT_ID }}"
           EOF
 
       - name: 'Az CLI login'
@@ -213,6 +214,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           # Terraform variables not included in terraform.tfvars.
           TF_VAR_public_key_jwk_file_authority: "authoritykey.public.jwk"
+          TF_VAR_private_key_pem_file_authority: "authoritykey.pem"
           TF_VAR_public_key_jwk_file_gaiax: "gaiaxkey.public.jwk"
 
       - name: 'Az CLI re-login (refresh role assignments)'
