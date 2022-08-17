@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Federated cache directory using Registration Service as backend.
  */
+@SuppressWarnings("checkstyle:CommentsIndentation")
 public class RegistrationServiceNodeDirectory implements FederatedCacheNodeDirectory {
 
     private final RegistryApi apiClient;
@@ -49,10 +50,6 @@ public class RegistrationServiceNodeDirectory implements FederatedCacheNodeDirec
                 .filter(AbstractResult::succeeded)
                 .map(AbstractResult::getContent)
                 .collect(Collectors.toList());
-    }
-
-    private FederatedCacheNode toFederatedCacheNode(ParticipantDto participant) {
-        return new FederatedCacheNode(participant.getName(), participant.getUrl(), participant.getSupportedProtocols());
     }
 
     @Override
