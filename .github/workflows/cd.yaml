@@ -10,10 +10,6 @@ on:
     paths-ignore:
       - 'docs/**'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 # MVD runs using docker-compose based setup with no dependency on cloud services.
 
 jobs:
