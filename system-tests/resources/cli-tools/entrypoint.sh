@@ -32,6 +32,5 @@ for participant in "${PARTICIPANTS[@]}"; do
                 --http-scheme \
                 -k=/resources/vault/$participantName/private-key.pem \
                 -c="$participantDid" \
-                 participants add \
-                --ids-url "http://$participantName:8282"
+                 participants add
 done

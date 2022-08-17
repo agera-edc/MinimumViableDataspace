@@ -457,8 +457,7 @@ jobs:
             -d did:web:$DATASPACE_DID_HOST \
             -c did:web:$PARTICIPANT_DID_HOST \
             -k participantkey.pem \
-            participants add \
-            --ids-url "http://${{ env.EDC_HOST }}:8282"
+            participants add
         env:
           REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
           DATASPACE_DID_HOST: ${{ needs.Deploy-Dataspace.outputs.dataspace_did_host }}
