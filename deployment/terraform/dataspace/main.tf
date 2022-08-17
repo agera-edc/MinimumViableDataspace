@@ -137,13 +137,6 @@ resource "azurerm_role_assignment" "current-user-secretsofficer" {
   principal_id         = data.azurerm_client_config.current_client.object_id
 }
 
-# Authority private key as secret in key vault
-resource "azurerm_key_vault_secret" "authority-private-key" {
-  name         = local.connector_name
-  value        = file(var.private_key_pem_file_authority)
-  key_vault_id = azurerm_key_vault.registrationservice.id
-}
-
 # Internal Dataspace Authority resources (Dataspace DID)
 resource "azurerm_storage_account" "dataspace_did" {
   name                     = "${var.prefix}dataspacedid"
