@@ -100,6 +100,7 @@ resource "azurerm_container_group" "registration-service" {
     }
 
     secure_environment_variables = {
+      APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.dataspace.connection_string
       EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
     }
 
