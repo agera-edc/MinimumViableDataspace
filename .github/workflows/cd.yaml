@@ -10,6 +10,10 @@ on:
     paths-ignore:
       - 'docs/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # MVD runs using docker-compose based setup with no dependency on cloud services.
 
 jobs:
@@ -34,7 +38,7 @@ jobs:
       # Build Registration Service runtime JAR locally.
       # The result is a JAR file in launcher/build/libs.
       - name: 'Build Registration Service launcher'
-        run: ./gradlew :launcher:shadowJar
+        run: ./gradlew -DuseFsVault="true" :launcher:shadowJar
         working-directory: ${{ runner.temp }}/RegistrationService
 
       - name: 'Copy Registration Service CLI'
