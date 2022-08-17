@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 /**
  * Federated cache directory using Registration Service as backend.
  */
-@SuppressWarnings("checkstyle:CommentsIndentation")
 public class RegistrationServiceNodeDirectory implements FederatedCacheNodeDirectory {
 
     private final RegistryApi apiClient;
