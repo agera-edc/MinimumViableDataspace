@@ -98,6 +98,10 @@ resource "azurerm_container_group" "registration-service" {
       WEB_HTTP_AUTHORITY_PATH = local.registration_service_path_prefix
     }
 
+    secure_environment_variables = {
+      EDC_VAULT_CLIENTSECRET = var.application_sp_client_secret
+    }
+
     liveness_probe {
       http_get {
         port = local.edc_default_port
