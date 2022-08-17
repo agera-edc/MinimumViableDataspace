@@ -68,6 +68,10 @@ jobs:
           REGISTRATION_SERVICE_LAUNCHER_PATH: ${{ runner.temp }}/RegistrationService/launcher
           MVD_UI_PATH: DataDashboard
 
+      - name: Temporary Sleep for development
+        run: sleep 4m
+        shell: bash
+
       - name: 'Unit and system tests'
         run: ./gradlew test
         timeout-minutes: 10
