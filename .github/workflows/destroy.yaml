@@ -52,6 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
