@@ -15,4 +15,7 @@ COPY ./identity-hub-cli.jar .
 
 COPY ./entrypoint.sh .
 
+# health status is determined by the success of the entrypoint script
+HEALTHCHECK --interval=5s CMD test -f finished.flag && exit 0 || exit 1
+
 ENTRYPOINT "/app/entrypoint.sh"

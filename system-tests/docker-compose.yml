@@ -171,6 +171,7 @@ services:
       context: ./resources/cli-tools
     volumes:
       - ./resources:/resources
+    tty: true
     depends_on:
       company1:
         condition: service_healthy
