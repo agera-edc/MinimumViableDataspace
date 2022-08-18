@@ -451,81 +451,51 @@ jobs:
           artifact: org.eclipse.dataspaceconnector.registrationservice:registration-service-cli:${{ env.REGISTRATION_SERVICE_VERSION }}:jar:all
           directory: deployment/terraform/participant
 
-      - name: 'Register participant'
+      - name: 'Request participant registration'
         run: |
-#          java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
-#            -d did:web:$DATASPACE_DID_HOST \
-#            -c did:web:$PARTICIPANT_DID_HOST \
-#            -k participantkey.pem \
-#            participants add
-          function waitForOnboarding() {
-            local participantName="$1"
-            local participantDid="$2"
-            echo "Fetching $participantName onboarding status..."
-            retryCount=0
-            maxRetryCount=30
-            onboardingCompleted=false
-            while [ $retryCount -lt $maxRetryCount ]; do
-                cmd="java -jar registration-service-cli.jar \
-                                -d=did:web:did-server:registration-service \
-                                --http-scheme \
-                                -k=/resources/vault/$participantName/private-key.pem \
-                                -c=$participantDid \
-                                participants get"
-                status=$($cmd|jq ".status")
-                echo "Status is $status"
-                if [ "$status" == "\"ONBOARDED\"" ]; then
-                    echo "$participantName is onboarded successfully"
-                    onboardingCompleted=true
-                    break
-                else
-                    echo "Onboarding is not completed yet for $participantName. Waiting for 1 seconds..."
-                    sleep 1
-                fi
-                retryCount=$((retryCount+1))
-            done
-            if [ "$onboardingCompleted" == false ]; then
-                echo "$participantDid onboarding is not completed yet. Exiting..."
-                exit 1
-            fi
-          }
-
-          function registerParticipant() {
-              local participantName="$1"
-              local participantDid="$2"
-              
-              echo "Registering $participantName"
-              java -jar registration-service-cli.jar \
-              -d="did:web:did-server:registration-service" \
-              --http-scheme \
-              -k=/resources/vault/$participantName/private-key.pem \
-              -c="$participantDid" \
-              participants add \
-              --ids-url "http://$participantName:8282"
-      
-              # wait for the participant to be onboarded
-              waitForOnboarding "$participantName" "$participantDid"
-          }
-               
-          PARTICIPANTS=(company1:eu company2:eu company3:us)
-          
-          for participant in "${PARTICIPANTS[@]}"; do
-              participantArray=(${participant//:/ })
-          
-              participantName=${participantArray[0]}
-              region=${participantArray[1]}
-              participantDid="did:web:did-server:$participantName"
-          
-            # seed  vc for participant
-            #seedVerifiedCredentials "$participantName" "$participantDid" "$region"
-          
-            # Register dataspace participants
-            registerParticipant "$participantName" "$participantDid"
-          done
-
+          java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
+            -d did:web:$DATASPACE_DID_HOST \
+            -c did:web:$PARTICIPANT_DID_HOST \
+            -k participantkey.pem \
+            participants add
         env:
           REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
           DATASPACE_DID_HOST: ${{ needs.Deploy-Dataspace.outputs.dataspace_did_host }}
+
+      - name: 'Wait for participant registration'
+        run: |               
+          retryCount=0
+          maxRetryCount=30
+          onboardingCompleted=false
+          
+          while [ $retryCount -lt $maxRetryCount ]; do
+              cmd="java -jar registration-service-cli.jar \
+                              -d=did:web:$DATASPACE_DID_HOST \
+                              --http-scheme \
+                              -k=participantkey.pem \
+                              -c=did:web:$PARTICIPANT_DID_HOST \
+                              participants get"
+              status=$($cmd|jq ".status")
+              echo "Status is $status"
+              if [ "$status" == "\"ONBOARDED\"" ]; then
+                  echo "Onboarded successfully: did:web:$DATASPACE_DID_HOST"
+                  onboardingCompleted=true
+                  break
+              else
+                  echo "Onboarding is not completed yet for 'did:web:$DATASPACE_DID_HOST'. Waiting for 1 seconds..."
+                  sleep 1
+              fi
+              retryCount=$((retryCount+1))
+          done
+          
+          if [ "$onboardingCompleted" == false ]; then
+              echo "Max retries of $maxRetryCount reached. Onboarding is not completed yet for 'did:web:$DATASPACE_DID_HOST'. Exiting."
+              exit 1
+          fi
+        env:
+          REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
+          DATASPACE_DID_HOST: ${{ needs.Deploy-Dataspace.outputs.dataspace_did_host }}
+
 
   Verify:
     needs:
