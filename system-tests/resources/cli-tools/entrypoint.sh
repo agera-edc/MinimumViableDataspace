@@ -47,7 +47,7 @@ function registerParticipant() {
               -c="$participantDid" \
                participants add
 
-# wait for the participant to be onboarded
+  # wait for the participant to be onboarded
   waitForOnboarding "$participantName" "$participantDid"
 }
 
