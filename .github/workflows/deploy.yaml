@@ -471,7 +471,6 @@ jobs:
           while [ $retryCount -lt $maxRetryCount ]; do
               cmd="java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
                               -d=did:web:$DATASPACE_DID_HOST \
-                              --http-scheme \
                               -k=participantkey.pem \
                               -c=did:web:$PARTICIPANT_DID_HOST \
                               participants get"
