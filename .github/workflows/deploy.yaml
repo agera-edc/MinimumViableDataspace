@@ -469,7 +469,7 @@ jobs:
           onboardingCompleted=false
           
           while [ $retryCount -lt $maxRetryCount ]; do
-              cmd="java -jar registration-service-cli.jar \
+              cmd="java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
                               -d=did:web:$DATASPACE_DID_HOST \
                               --http-scheme \
                               -k=participantkey.pem \
