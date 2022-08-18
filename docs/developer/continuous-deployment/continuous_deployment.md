@@ -229,11 +229,11 @@ Configure the following GitHub secrets which are required by the CD pipeline:
 | `ACR_NAME`                    | The name of the Azure Container Registry to deploy. Use only lowercase letters and numbers. |
 | `TERRAFORM_STATE_STORAGE_ACCOUNT` | The name of the storage account used to store the Terraform state container, e.g. *mvdterraformstates*. |
 | `TERRAFORM_STATE_CONTAINER` | The name of the container used to store the Terraform state blob, e.g. *mvdterraformstates*. |
-| `CD_RESOURCES_PREFIX` | A globally unique sequence of 3 to 7 lowercase letters and digits, starting with a letter, that will be used to name Azure resources. This prefix allows to have unique resource names across fork repositories when running CD workflows. |
+| `CD_RESOURCES_PREFIX` | A string, that when reversed, is a globally unique sequence of 3 to 7 lowercase letters and digits, starting with a letter, that will be used to name Azure resources. This prefix allows to have unique resource names across fork repositories when running CD workflows. |
 
 See instructions under [Configure GitHub Secrets for GitHub Actions](#configure-github-secrets-for-github-actions) on how to configure GitHub secrets.
 
-For further information on Azure resouce naming, please refer to [naming conventions](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) and [naming rules and restrictions for Azure resources](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules).
+For further information on Azure resource naming, please refer to [naming conventions](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) and [naming rules and restrictions for Azure resources](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules).
 
 ## Deploy Common CD Resources
 
