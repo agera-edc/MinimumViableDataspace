@@ -55,7 +55,7 @@ jobs:
       - SetResourcesPrefix
       - Check-Cloud-Environments
     with:
-      resources_prefix: ${{ needs.SetResourcesPrefix.outputs.resources_prefix }}
+      resources_prefix: ${{ secrets.CD_RESOURCES_PREFIX }}${{ github.run_number }}
 
   Destroy:
     # Always run Destroy workflow unless SetResourcesPrefix workflow fails.
