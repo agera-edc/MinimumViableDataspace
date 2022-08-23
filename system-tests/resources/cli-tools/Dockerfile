@@ -14,6 +14,7 @@ COPY ./registration-service-cli.jar .
 COPY ./identity-hub-cli.jar .
 
 COPY ./entrypoint.sh .
+COPY ./validate_onboarding.sh .
 
 # health status is determined by the success of the entrypoint script
 HEALTHCHECK --start-period=60s --interval=5s --retries=3 CMD test -f finished.flag
