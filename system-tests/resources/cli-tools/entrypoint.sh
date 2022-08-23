@@ -39,11 +39,11 @@ PARTICIPANTS=(company1:eu company2:eu company3:us)
 
 # Seed VCs and register participants.
 for participant in "${PARTICIPANTS[@]}"; do
-    participantArray=(${participant//:/ })
+  participantArray=(${participant//:/ })
 
-    participantName=${participantArray[0]}
-    region=${participantArray[1]}
-    participantDid="did:web:did-server:$participantName"
+  participantName=${participantArray[0]}
+  region=${participantArray[1]}
+  participantDid="did:web:did-server:$participantName"
 
   # seed vc for participant
   seedVerifiedCredentials "$participantName" "$participantDid" "$region"
@@ -54,13 +54,20 @@ done
 
 # Await registrations of participants.
 for participant in "${PARTICIPANTS[@]}"; do
-    participantArray=(${participant//:/ })
+  participantArray=(${participant//:/ })
 
-    participantName=${participantArray[0]}
-    participantDid="did:web:did-server:$participantName"
+  participantName=${participantArray[0]}
+  participantDid="did:web:did-server:$participantName"
+
+  cmd="java -jar registration-service-cli.jar \
+                  -d=did:web:did-server:registration-service \
+                  --http-scheme \
+                  -k=/resources/vault/$participantName/private-key.pem \
+                  -c=$participantDid \
+                  participants get"
 
   # Wait for participant registration.
-  ./validate_onboarding.sh "$participantName" "$participantDid"
+  ./validate_onboarding.sh "$participantDid" "$cmd"
 done
 
 # flag for healthcheck by Docker
