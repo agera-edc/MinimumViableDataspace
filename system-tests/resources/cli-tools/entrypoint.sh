@@ -69,6 +69,7 @@ function seedVerifiedCredentials() {
 
 PARTICIPANTS=(company1:eu company2:eu company3:us)
 
+# Seed VCs and register participants.
 for participant in "${PARTICIPANTS[@]}"; do
     participantArray=(${participant//:/ })
 
@@ -76,11 +77,19 @@ for participant in "${PARTICIPANTS[@]}"; do
     region=${participantArray[1]}
     participantDid="did:web:did-server:$participantName"
 
-  # seed  vc for participant
+  # seed vc for participant
   seedVerifiedCredentials "$participantName" "$participantDid" "$region"
 
   # Register dataspace participants
   registerParticipant "$participantName" "$participantDid"
+done
+
+# Await registrations of participants.
+for participant in "${PARTICIPANTS[@]}"; do
+    participantArray=(${participant//:/ })
+
+    participantName=${participantArray[0]}
+    participantDid="did:web:did-server:$participantName"
 
   # Wait for participant registration.
   waitForOnboarding "$participantName" "$participantDid"
