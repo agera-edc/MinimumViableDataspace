@@ -179,7 +179,17 @@ Once completed, following services will start within their docker containers:
 
 (EDC Connectors will also be seeded with initial required data using a [postman collection](../deployment/data/MVD.postman_collection.json))
 
-_Note, the `Newman` docker container will automatically stop after seeding initial data from postman scripts and `cli-tools` container will also automatically stop after registering participants._
+> Note, the `Newman` docker container will automatically stop after seeding initial data from postman scripts.
+
+> The container `cli-tools` will turn into the state `healthy` after registering successfully all participants.
+
+Sample for confirming successful run of container `cli-tools`.
+
+```powershell
+PS C:\> docker ps
+CONTAINER ID   IMAGE                                     COMMAND                   CREATED              STATUS                        PORTS                                                                              NAMES
+22345bf0c595   system-tests_cli-tools                    "/bin/sh -c \"/app/en…"   About a minute ago   Up About a minute (healthy)                                                                                      cli-tools
+```
 
 Set the environment variable `TEST_ENVIRONMENT` to `local` to enable local blob transfer test and then run `MVD` system test using the following command:
 
