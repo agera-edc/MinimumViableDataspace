@@ -474,11 +474,12 @@ jobs:
                 -c=$participantDid \
                 participants get"
           
-          ./system-tests/resources/cli-tools/validate_onboarding.sh "$participantDid" "$cmd"
+          ./validate_onboarding.sh "$participantDid" "$cmd"
 
         env:
           REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
           DATASPACE_DID_HOST: ${{ needs.Deploy-Dataspace.outputs.dataspace_did_host }}
+        working-directory: ${GITHUB_WORKSPACE}/system-tests/resources/cli-tools
 
   Verify:
     needs:
