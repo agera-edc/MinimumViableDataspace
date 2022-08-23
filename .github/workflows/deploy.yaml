@@ -463,38 +463,21 @@ jobs:
           DATASPACE_DID_HOST: ${{ needs.Deploy-Dataspace.outputs.dataspace_did_host }}
 
       - name: 'Wait for participant registration'
-        run: |               
-          retryCount=0
-          maxRetryCount=30
-          onboardingCompleted=false
+        run: |
           
-          while [ $retryCount -lt $maxRetryCount ]; do
-              cmd="java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
-                              -d=did:web:$DATASPACE_DID_HOST \
-                              -k=participantkey.pem \
-                              -c=did:web:$PARTICIPANT_DID_HOST \
-                              participants get"
-              status=$($cmd|jq ".status")
-              echo "Status is $status"
-              if [ "$status" == "\"ONBOARDED\"" ]; then
-                  echo "Onboarded successfully: did:web:$DATASPACE_DID_HOST"
-                  onboardingCompleted=true
-                  break
-              else
-                  echo "Onboarding is not completed yet for 'did:web:$DATASPACE_DID_HOST'. Waiting for 1 seconds..."
-                  sleep 1
-              fi
-              retryCount=$((retryCount+1))
-          done
+          participantDid="did:web:$DATASPACE_DID_HOST"
           
-          if [ "$onboardingCompleted" == false ]; then
-              echo "Max retries of $maxRetryCount reached. Onboarding is not completed yet for 'did:web:$DATASPACE_DID_HOST'. Exiting."
-              exit 1
-          fi
+          cmd="java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
+                -d=did:web:$DATASPACE_DID_HOST \
+                -k=participantkey.pem \
+                -c=did:web:$PARTICIPANT_DID_HOST \
+                participants get"
+          
+          ./system-tests/resources/cli-tools/validate_onboarding.sh "$participantDid" "$cmd"
+
         env:
           REGISTRATION_SERVICE_VERSION: 0.0.1-SNAPSHOT
           DATASPACE_DID_HOST: ${{ needs.Deploy-Dataspace.outputs.dataspace_did_host }}
-
 
   Verify:
     needs:
