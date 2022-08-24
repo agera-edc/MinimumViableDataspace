@@ -464,14 +464,10 @@ jobs:
 
       - name: 'Wait for participant registration'
         run: |
-          
-          hostDid="did:web:$DATASPACE_DID_HOST"
-          participantDid="did:web:$PARTICIPANT_DID_HOST"
-          
           cmd="java -jar registration-service-cli-$REGISTRATION_SERVICE_VERSION-all.jar \
-                -d=$hostDid \
+                -d=did:web:$DATASPACE_DID_HOST \
                 -k=participantkey.pem \
-                -c=$participantDid \
+                -c=did:web:$PARTICIPANT_DID_HOST \
                 participants get"
           
           $GITHUB_WORKSPACE/system-tests/resources/cli-tools/validate_onboarding.sh "$participantDid" "$cmd"
