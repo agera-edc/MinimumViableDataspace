@@ -87,18 +87,30 @@ standard scenario which can be optionally used with the local development enviro
 
 Sample how to enter the container `cli-tools` and test a command manually.
 
+Host:
+
 ```powershell
-PS C:\wb\edc\agera\mvd> docker exec -it cli-tools bash
-root@22345bf0c595:/app# java -jar registration-service-cli.jar \
->                       -d=did:web:did-server:registration-service \
->                       --http-scheme \
->                       -k=/resources/vault/company1/private-key.pem \
->                       -c=did:web:did-server:company1 \
->                       participants get
+docker exec -it cli-tools bash
+```
+
+Container:
+
+```bash
+java -jar registration-service-cli.jar \
+>    -d=did:web:did-server:registration-service \
+>    --http-scheme \
+>    -k=/resources/vault/company1/private-key.pem \
+>    -c=did:web:did-server:company1 \
+>    participants get
+```
+
+Output (container)
+
+```json
 {
   "did" : "did:web:did-server:company1",
   "status" : "ONBOARDED"
-}root@22345bf0c595:/app#
+}
 ```
 
 ### Run A Standard Scenario Locally

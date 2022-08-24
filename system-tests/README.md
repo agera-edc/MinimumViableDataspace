@@ -184,8 +184,15 @@ Once completed, following services will start within their docker containers:
 
 Sample for confirming successful run of container `cli-tools`.
 
+Command:
+
 ```powershell
-PS C:\> docker ps
+docker ps -a
+```
+
+Output:
+
+```powershell
 CONTAINER ID   IMAGE                                     COMMAND                   CREATED              STATUS                        PORTS                                                                              NAMES
 22345bf0c595   system-tests_cli-tools                    "/bin/sh -c \"/app/en…"   About a minute ago   Up About a minute (healthy)                                                                                      cli-tools
 ```
