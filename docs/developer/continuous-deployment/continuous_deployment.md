@@ -229,7 +229,7 @@ Configure the following GitHub secrets which are required by the CD pipeline:
 | `ACR_NAME`                    | The name of the Azure Container Registry to deploy. Use only lowercase letters and numbers. |
 | `TERRAFORM_STATE_STORAGE_ACCOUNT` | The name of the storage account used to store the Terraform state container, e.g. *mvdterraformstates*. |
 | `TERRAFORM_STATE_CONTAINER` | The name of the container used to store the Terraform state blob, e.g. *mvdterraformstates*. |
-| `CD_RESOURCES_PREFIX` | A string, that when reversed, is a globally unique sequence of 3 to 7 lowercase letters and digits, starting with a letter, that will be used to name Azure resources. This prefix allows to have unique resource names across fork repositories when running CD workflows. |
+| `CD_RESOURCES_PREFIX` | A string, that when reversed, is a globally unique sequence of 3 to 7 lowercase letters and digits, starting with a letter, that will be used to name Azure resources. For example, the value `dvmcde` will result in the string `edcmvd` being used in Azure resource names. This prefix allows to have unique resource names across fork repositories when running CD workflows.<br />*Note: The reason the prefix is stored as a reversed string is to avoid the value being excluded from GitHub job outputs.* |
 
 See instructions under [Configure GitHub Secrets for GitHub Actions](#configure-github-secrets-for-github-actions) on how to configure GitHub secrets.
 
