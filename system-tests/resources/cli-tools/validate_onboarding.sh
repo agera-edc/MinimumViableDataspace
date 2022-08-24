@@ -6,7 +6,7 @@ set -euo pipefail
 participantDid="$1"
 cmd="$2"
 
-echo "Fetching $participantDid onboarding status..."
+echo "Fetching $participantDid onboarding status."
 
 retryCount=0
 maxRetryCount=30
@@ -16,14 +16,14 @@ while [ $retryCount -lt $maxRetryCount ]; do
 
     status=$($cmd|jq ".status")
 
-    echo "Status is $status"
+    echo "Status: $status"
 
     if [ "$status" == "\"ONBOARDED\"" ]; then
         echo "$participantDid is onboarded successfully"
         onboardingCompleted=true
         break
     else
-        echo "Onboarding is not completed yet for $participantDid. Waiting for 1 seconds..."
+        echo "Onboarding is not completed yet for $participantDid. Waiting for 1 second."
 
         sleep 1
     fi
