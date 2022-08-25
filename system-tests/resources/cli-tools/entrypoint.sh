@@ -28,7 +28,7 @@ function seedVerifiedCredentials() {
      java -jar identity-hub-cli.jar \
                  -s="http://$participantName:8181/api/identity-hub" \
                  vc add \
-                 -c='{"id":"'$vcId'","credentialSubject":{'"$subject"'}}' \
+                 -c='{"id":"'"$vcId"'","credentialSubject":{'"$subject"'}}' \
                 -b="$participantDid" \
                  -i="did:web:did-server:gaia-x" \
                  -k="/resources/vault/gaia-x/private-key.pem"
