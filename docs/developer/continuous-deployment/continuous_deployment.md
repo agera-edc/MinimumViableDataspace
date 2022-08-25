@@ -64,15 +64,13 @@ needed for Github.
 _A Github user with permission to write secrets is required for this step!_
 
 This can be done manually using the Github website ([see documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets)).
-Alternatively there is a [shell script](../../../resources/setup_azure_ad/set-gh-secrets.sh) that will set all Github Secrets automatically. From the `resources/setup_azure_ad` directory simply execute
-`./set-gh-secrets.sh` on a shell.
+Alternatively there is a [shell script](../../../resources/setup_azure_ad/set-gh-secrets.sh) that will set the relevant Github Secrets automatically. From the `resources/setup_azure_ad` directory, execute`./set-gh-secrets.sh` in a shell.
 
 _Requirements_:
 - user must be logged in to [Github CLI](https://cli.github.com/manual/gh_auth_login)
 - `terraform` must have completed successfully
 
-
---> continue with [setting up CI](continuous_deployment.md#deploy-common-cd-resources)
+Continue with [Configure CD Settings](#configure-cd-settings).
 
 ## Option 2: Manually set up Azure AD using the Azure Portal
 In case you're not comfortable with the Azure CLI or don't want to install it, the App Registrations and Service Principals can also be set up manually using the Azure Portal.
