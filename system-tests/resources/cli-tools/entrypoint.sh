@@ -64,7 +64,7 @@ function awaitParticipantRegistration() {
 }
 
 # Read participants from participants.json file.
-participants=$(jq -r '.include | map([.participant, .region])[] | @sh' participants.json)
+participants=$(jq -r '.include | map([.participant, .region])[] | @sh' /common-resources/participants.json)
 
 # Seed VCs and register participants.
 while read -r i; do
