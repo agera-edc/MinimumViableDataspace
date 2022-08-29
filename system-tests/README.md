@@ -58,7 +58,7 @@ System tests are run both in local deployment (using docker compose) and in the 
 
 ```bash
 # EDC (in the EDC root folder, checkout the release tag to a local branch)
-git checkout tags/v0.0.1-milestone-5 -b ms5
+git checkout tags/v0.0.1-milestone-5.1 -b ms5
 
 # Identity Hub (in the Identity Hub root folder)
 git checkout bc13cf0cb8589b792eef733c7cf7b3422476add5
