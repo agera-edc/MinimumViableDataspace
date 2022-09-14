@@ -42,20 +42,20 @@ runs:
     # Cache EDC packages (installed into ~/.m2) in-between runs.
     # If the latest EDC commit ID has not changed since the last run, this will restore
     # its Maven packages from the cache.
-    - name: Cache EDC packages
-      uses: actions/cache@v3
-      id: cache
-      with:
-        path: ~/.m2
-        # .git/FETCH_HEAD contains latest commit ID
-        key: ${{ runner.os }}-m2-${{ hashFiles('DataSpaceConnector/.git/FETCH_HEAD') }}-${{ hashFiles('RegistrationService/.git/FETCH_HEAD') }}-${{ hashFiles('IdentityHub/.git/FETCH_HEAD') }}
+    # - name: Cache EDC packages
+    #   uses: actions/cache@v3
+    #   id: cache
+    #   with:
+    #     path: ~/.m2
+    #     # .git/FETCH_HEAD contains latest commit ID
+    #     key: ${{ runner.os }}-m2-${{ hashFiles('DataSpaceConnector/.git/FETCH_HEAD') }}-${{ hashFiles('RegistrationService/.git/FETCH_HEAD') }}-${{ hashFiles('IdentityHub/.git/FETCH_HEAD') }}
 
     # Install EDC packages into ~/.m2.
     # This action only runs if the packages could not be restored from the cache.
     - name: Build EDC packages
       run: |
         ./gradlew publishToMavenLocal -Pskip.signing
-      if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
+      # if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
       shell: bash
       working-directory: DataSpaceConnector
 
@@ -68,7 +68,7 @@ runs:
     - name: Build Registration Service packages
       run: |
         ./gradlew publishToMavenLocal -Pskip.signing
-      if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
+      # if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
       shell: bash
       working-directory: RegistrationService
 
@@ -82,7 +82,7 @@ runs:
     - name: Build Identity Hub packages
       run: |
         ./gradlew publishToMavenLocal -Pskip.signing
-      if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
+      # if: steps.cache.outputs.cache-hit != 'true' # only on cache miss
       shell: bash
       working-directory: IdentityHub
 
